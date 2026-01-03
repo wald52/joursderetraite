@@ -3,7 +3,7 @@
     /* Couleurs par défaut (mode clair) */
     --bg-color: #f4f4f4;
     --container-bg: #fff;
-    --text-color: #333;
+    --text-color: var(--h1-color);
     --input-bg: #fff;
     --input-border: #ddd;
     --button-bg: #2E7D32;
@@ -14,7 +14,7 @@
     --install-btn-hover: #0D47A1;
     --result-bg: #f9f9f9;
     --result-border: #ddd;
-    --h1-color: #333;
+    --h1-color: var(--h1-color);
 }
 
 /* Mode sombre basé sur les préférences système */
@@ -63,67 +63,45 @@ h1 {
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
 }
 
 input[type="number"] {
     width: 100%;
-    padding: 6px;
-    margin-bottom: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid var(--input-border);
     border-radius: 4px;
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s;
-}
-
-.button-group {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.button-group button {
-    flex: 1;
-    min-width: 120px;
-}
-
-input[type="number"]:focus {
-    outline: none;
-    border-color: var(--copy-btn-bg);
 }
 
 button {
     background-color: var(--button-bg); /* Couleur verte plus foncée pour meilleur contraste */
     color: white;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
     text-align: center;
     justify-content: center; /* Centre le contenu du bouton */
-    transition: background-color 0.3s;
-    display: inline-flex;
-    align-items: center;
 }
 
 button:hover {
     background-color: var(--button-hover); /* Couleur encore plus foncée au survol */
 }
 
-/* Amélioration du contraste pour le bouton de copie */
+/* Amélioration du contraste pour le bouton de copie aussi */
 .copy-btn {
     background-color: var(--copy-btn-bg); /* Bleu plus foncé pour meilleur contraste */
     color: white;
     border: none;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
@@ -133,7 +111,6 @@ button:hover {
     gap: 5px;
     font-weight: bold;
     text-align: center;
-    transition: background-color 0.3s;
 }
 
 .copy-btn:hover {
@@ -145,45 +122,72 @@ button:hover {
 }
 
 .result {
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .result p {
-    margin: 8px 0;
+    margin: 10px 0;
 }
 
 .result-single-line {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
-    padding: 12px;
+    padding: 15px;
     background-color: var(--result-bg);
-    border: 1px solid var(--result-border);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
-    min-height: 45px;
+    min-height: 50px;
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
     justify-content: space-between; /* Assure une bonne répartition de l'espace */
-    transition: background-color 0.3s, border-color 0.3s;
 }
 
 #result-text {
     flex-grow: 1;
     font-weight: bold;
-    color: var(--text-color);
+    color: var(--h1-color);
     word-break: break-word;
+}
+
+.copy-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0; /* Empêche le bouton de rétrécir */
+}
+
+.copy-btn:hover {
+    background-color: #0b7dda;
+}
+
+.copy-btn:active {
+    transform: scale(0.98);
+}
+
+/* Assure que le bouton est stylé correctement */
+.copy-btn {
+    align-items: center;
+    gap: 5px;
 }
 
 /* Style pour le bouton d'installation */
 .install-btn {
-    background-color: var(--install-btn-bg); /* Utilisation de la même couleur améliorée pour la cohérence */
+    background-color: var(--copy-btn-bg); /* Utilisation de la même couleur améliorée pour la cohérence */
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 15px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -192,16 +196,15 @@ button:hover {
     margin-left: auto;
     margin-right: auto;
     font-weight: bold;
-    transition: background-color 0.3s;
 }
 
 .install-btn:hover {
-    background-color: var(--install-btn-hover);
+    background-color: var(--copy-btn-hover);
 }
 
 .install-section {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 /* Classe pour le texte accessible uniquement aux lecteurs d'écran */
@@ -217,77 +220,21 @@ button:hover {
     border: 0;
 }
 
-/* Style pour la section des exemples */
-.examples-section {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: rgba(233, 233, 233, 0.2);
-    border-radius: 4px;
-    border: 1px solid var(--input-border);
-}
-
-.examples-section p {
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-.examples-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 8px;
-}
-
-.example-btn {
-    background-color: var(--button-bg);
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: left;
-    transition: background-color 0.3s;
-    white-space: normal;
-    min-height: 40px;
-}
-
-.example-btn:hover {
-    background-color: var(--button-hover);
-}
-
-.current-example { display: none;
-    margin-top: 8px;
-    padding: 6px;
-    background-color: var(--result-bg);
-    border: 1px solid var(--result-border);
-    border-radius: 4px;
-    font-style: italic;
-    color: var(--text-color);
-}
-
-@media (max-width: 768px) {
-    .examples-buttons {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Améliorations pour les appareils mobiles */
 @media (max-width: 768px) {
     body {
-        padding: 6px;
+        padding: 10px;
     }
 
     .container {
-        padding: 12px;
+        padding: 15px;
         margin: 5px;
     }
 
     .result-single-line {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
+        gap: 10px;
     }
 
     .copy-btn {
@@ -299,14 +246,14 @@ button:hover {
         text-align: center;
         order: -1; /* Mettre le texte en premier dans l'affichage mobile */
         padding-bottom: 10px;
-        border-bottom: 1px solid var(--result-border);
-        margin-bottom: 8px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 6px;
+        padding: 10px;
         margin: 2px;
     }
 

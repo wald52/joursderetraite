@@ -1,30 +1,475 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculatrice d'Équivalent Retraites 2025</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Calculatrice d'équivalent Retraites - Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <title>Calculatrice d'équivalent Retraites 2025</title>
+    
+    <!-- Balises Open Graph pour le partage sur les réseaux sociaux -->
+    <meta property="og:title" content="Calculatrice d'équivalent Retraites 2025">
+    <meta property="og:description" content="Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://replacing-antique-dialog-lite.trycloudflare.com">
+    <meta property="og:image" content="https://replacing-antique-dialog-lite.trycloudflare.com/icon-512x512.png">
+    <meta property="og:locale" content="fr_FR">
+    
+    <!-- Balises Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Calculatrice d'équivalent Retraites 2025">
+    <meta name="twitter:description" content="Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <meta name="twitter:image" content="https://replacing-antique-dialog-lite.trycloudflare.com/icon-512x512.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0a0a0f',
+                            800: '#121218',
+                            700: '#1a1a23',
+                            600: '#22222e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .glass-card {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dark .glass-card {
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .gradient-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        
+        .result-item {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .counter-animation {
+            animation: counterAnimation 1s ease-out;
+        }
+        
+        @keyframes counterAnimation {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .share-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
 </head>
-<body>
-    <div class="container">
-        <h1>Calculatrice d'Équivalent Retraites 2025</h1>
-        <p>Entrez un montant en euros pour voir son équivalent en années, mois, jours, heures, minutes et secondes de retraites versées en France en 2025.</p>
-        <div class="input-group">
-            <label for="amount">Montant (en euros) :</label>
-            <input type="number" id="amount" placeholder="Exemple: 5000000">
-            <button onclick="calculate()">Calculer</button>
-        </div>
-        <div class="result">
-            <h2>Résultat :</h2>
-            <p id="years"></p>
-            <p id="months"></p>
-            <p id="days"></p>
-            <p id="hours"></p>
-            <p id="minutes"></p>
-            <p id="seconds"></p>
-        </div>
+<body class="bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                Calculatrice d'équivalent Retraites
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Entrez un montant en euros pour voir son équivalent en années, mois, jours, heures, minutes et secondes de retraites versées en France en 2025.
+            </p>
+        </header>
+
+        <main>
+            <div class="glass-card rounded-2xl p-6 mb-8 shadow-xl border">
+                <div class="examples-section mb-6">
+                    <button type="button" class="gradient-btn text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg" onclick="setRandomExample()">
+                        <i class="fas fa-random"></i> Charger un exemple
+                    </button>
+                    <div id="current-example" class="mt-3 text-sm text-gray-600 dark:text-gray-300 italic"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Montant (en euros) :
+                    </label>
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Exemple: 5000000"
+                        min="0"
+                        step="any"
+                        class="input-field w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                        oninput="handleInput()"
+                    >
+                    <div class="button-group flex gap-3 mt-4">
+                        <button 
+                            onclick="calculate()" 
+                            class="gradient-btn text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg"
+                        >
+                            <i class="fas fa-calculator"></i> Calculer
+                        </button>
+                        <button 
+                            type="button" 
+                            onclick="resetForm()" 
+                            class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600"
+                        >
+                            <i class="fas fa-redo"></i> Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-section" class="glass-card rounded-2xl p-6 shadow-xl border hidden">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Résultat :</h2>
+                <div id="result-container" class="result-single-line flex flex-wrap gap-4">
+                    <span id="result-text" class="text-lg font-medium text-gray-700 dark:text-gray-300 flex-grow"></span>
+                    <button 
+                        id="copy-btn" 
+                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600"
+                        onclick="copyResult()"
+                    >
+                        <i class="fas fa-copy"></i> Copier
+                    </button>
+                </div>
+            </div>
+
+            <div id="share-section" class="glass-card rounded-2xl p-6 shadow-xl border mt-8 hidden">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Partager ce résultat</h3>
+                <div class="flex gap-3">
+                    <button class="share-btn bg-green-500 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2" onclick="shareOnWhatsApp()">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="share-btn bg-blue-400 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2" onclick="shareOnTwitter()">
+                        <i class="fab fa-x-twitter"></i> X (Twitter)
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-section text-center mt-12">
+                <button 
+                    id="install-btn" 
+                    class="gradient-btn text-white px-6 py-3 rounded-xl font-medium hidden"
+                    onclick="promptInstall()"
+                >
+                    <i class="fas fa-download"></i> Installer l'application
+                </button>
+            </div>
+        </main>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // Tableau des exemples de valeurs célèbres
+        const examples = [
+            { value: 1500000000, label: "1,5Mds € - Budget annuel de l'UNESCO" },
+            { value: 40000000, label: "40M € - Salaire annuel de Kylian Mbappé" },
+            { value: 1000000000, label: "1Mds € - Dons à la Fondation Gates" },
+            { value: 150000000, label: "150M € - Prix d'une œuvre de Basquiat" },
+            { value: 500000000, label: "500M € - Valeur d'une entreprise moyenne du CAC 40" },
+            { value: 2500000000, label: "2,5Mds € - Prix d'une villa à Monaco" },
+            { value: 80000000, label: "80M € - Salaire annuel d'un PDG du CAC 40" },
+            { value: 3000000000, label: "3Mds € - Coût d'un avion présidentiel" },
+            { value: 60000000, label: "60M € - Prix d'un yacht de luxe" },
+            { value: 1200000000, label: "1,2Mds € - Budget d'un film hollywoodien" }
+        ];
+
+        // Variable pour stocker l'événement d'installation différée
+        let deferredPrompt;
+
+        // Enregistrement du service worker pour la PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker enregistré avec succès:', registration.scope);
+                        
+                        // Vérifier si l'événement beforeinstallprompt est disponible
+                        window.addEventListener('beforeinstallprompt', (event) => {
+                            console.log('Événement beforeinstallprompt déclenché');
+                            // Empêche l'invite par défaut
+                            event.preventDefault();
+                            // Stocke l'événement pour une utilisation ultérieure
+                            deferredPrompt = event;
+                            
+                            // Afficher le bouton d'installation
+                            const installBtn = document.getElementById('install-btn');
+                            if (installBtn) {
+                                installBtn.classList.remove('hidden');
+                            }
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log('Échec de l\'enregistrement du ServiceWorker:', error);
+                    });
+            });
+        }
+
+        // Fonction pour déclencher l'invite d'installation
+        function promptInstall() {
+            if (deferredPrompt) {
+                // Affiche l'invite d'installation
+                deferredPrompt.prompt();
+                
+                // Attend la réponse de l'utilisateur
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    console.log('Choix de l\'utilisateur:', choiceResult.outcome);
+                    
+                    // Indépendamment du choix, on masque le bouton
+                    const installBtn = document.getElementById('install-btn');
+                    if (installBtn) {
+                        installBtn.classList.add('hidden');
+                    }
+                    
+                    // Réinitialise l'événement différé
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // Fonction pour obtenir un exemple aléatoire
+        function getRandomExample() {
+            const randomIndex = Math.floor(Math.random() * examples.length);
+            return examples[randomIndex];
+        }
+
+        // Fonction pour définir une valeur d'exemple
+        function setExampleValue(value) {
+            document.getElementById('amount').value = value;
+            // Déclencher le calcul automatiquement
+            calculate();
+        }
+
+        // Fonction pour définir un exemple aléatoire
+        function setRandomExample() {
+            const randomExample = getRandomExample();
+            document.getElementById('amount').value = randomExample.value;
+
+            // Mettre à jour l'affichage de l'exemple actuel
+            const currentExampleElement = document.getElementById('current-example');
+
+            // Réinitialiser les propriétés CSS pour permettre l'affichage
+            currentExampleElement.style.transition = '';
+            currentExampleElement.style.opacity = '';
+            currentExampleElement.style.transform = '';
+            currentExampleElement.style.display = 'block';
+
+            currentExampleElement.textContent = randomExample.label;
+
+            // Déclencher le calcul automatiquement
+            calculate();
+        }
+
+        // Fonction pour calculer l'équivalent retraites
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount) || amount < 0) {
+                alert("Veuillez entrer un montant valide.");
+                return;
+            }
+
+            // Montant total des retraites versées en France en 2025
+            const totalRetraites = 420e9; // 420 milliards d'euros
+
+            // Calcul du ratio
+            const ratio = amount / totalRetraites;
+
+            // Nombre de secondes dans une année (en prenant en compte les années bissextiles)
+            const secondsInYear = 365.25 * 24 * 60 * 60;
+            
+            // Calcul des secondes équivalentes
+            const equivalentSeconds = ratio * secondsInYear;
+
+            // Conversion en années, mois, jours, heures, minutes et secondes
+            const secondsInDay = 24 * 60 * 60;
+            const secondsInHour = 60 * 60;
+            const secondsInMinute = 60;
+            
+            // Calcul des années
+            const years = Math.floor(equivalentSeconds / (365.25 * secondsInDay));
+            const remainingSecondsAfterYears = equivalentSeconds % (365.25 * secondsInDay);
+            
+            // Calcul des mois (moyenne de 30.44 jours par mois : 365.25/12)
+            const monthsInYear = 12;
+            const daysInMonth = 365.25 / monthsInYear; // ≈ 30.44 jours
+            const secondsInMonth = daysInMonth * secondsInDay;
+            
+            const months = Math.floor(remainingSecondsAfterYears / secondsInMonth);
+            const remainingSecondsAfterMonths = remainingSecondsAfterYears % secondsInMonth;
+            
+            // Calcul des jours, heures, minutes et secondes
+            const days = Math.floor(remainingSecondsAfterMonths / secondsInDay);
+            const remainingSecondsAfterDays = remainingSecondsAfterMonths % secondsInDay;
+            const hours = Math.floor(remainingSecondsAfterDays / secondsInHour);
+            const remainingSecondsAfterHours = remainingSecondsAfterDays % secondsInHour;
+            const minutes = Math.floor(remainingSecondsAfterHours / secondsInMinute);
+            const seconds = Math.floor(remainingSecondsAfterHours % secondsInMinute);
+
+            // Formatage du résultat sur une seule ligne (sans virgules, affichage uniquement des valeurs > 0, avec accord au singulier/pluriel)
+            const resultParts = [];
+            if (years > 0) resultParts.push(`${years} ${years === 1 ? 'année' : 'années'}`);
+            if (months > 0) resultParts.push(`${months} ${months === 1 ? 'mois' : 'mois'}`); // 'mois' est invariable
+            if (days > 0) resultParts.push(`${days} ${days === 1 ? 'jour' : 'jours'}`);
+            if (hours > 0) resultParts.push(`${hours} ${hours === 1 ? 'heure' : 'heures'}`);
+            if (minutes > 0) resultParts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
+            if (seconds > 0) resultParts.push(`${seconds} ${seconds === 1 ? 'seconde' : 'secondes'}`);
+            
+            const resultText = resultParts.length > 0 ? resultParts.join(' ') : '0 seconde';
+
+            // Affichage du résultat
+            document.getElementById('result-text').textContent = resultText;
+
+            // Afficher la section de résultat
+            document.getElementById('result-section').classList.remove('hidden');
+            
+            // Afficher la section de partage
+            document.getElementById('share-section').classList.remove('hidden');
+            
+            // Ajouter une animation au résultat
+            document.getElementById('result-text').classList.add('counter-animation');
+            setTimeout(() => {
+                document.getElementById('result-text').classList.remove('counter-animation');
+            }, 1000);
+        }
+
+        // Fonction pour copier le résultat dans le presse-papiers
+        function copyResult() {
+            const resultText = document.getElementById('result-text').textContent;
+            
+            if (resultText.trim() === "") {
+                alert("Aucun résultat à copier. Veuillez d'abord effectuer un calcul.");
+                return;
+            }
+            
+            navigator.clipboard.writeText(resultText).then(function() {
+                // Afficher un message de confirmation temporaire
+                const copyBtn = document.getElementById('copy-btn');
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copié!';
+                
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erreur lors de la copie: ', err);
+                alert('Erreur lors de la copie: ' + err);
+            });
+        }
+
+        // Fonction pour gérer l'entrée de l'utilisateur
+        function handleInput() {
+            const currentExampleElement = document.getElementById('current-example');
+
+            // Appliquer un effet de fondu pour masquer l'exemple
+            currentExampleElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            currentExampleElement.style.opacity = '0';
+            currentExampleElement.style.transform = 'translateY(-10px)';
+
+            // Après l'animation, masquer complètement l'élément
+            setTimeout(() => {
+                currentExampleElement.style.display = 'none';
+            }, 300);
+        }
+
+        // Fonction pour réinitialiser le formulaire
+        function resetForm() {
+            // Réinitialiser le champ de saisie
+            document.getElementById('amount').value = '';
+
+            // Réinitialiser l'affichage de l'exemple
+            const currentExampleElement = document.getElementById('current-example');
+            currentExampleElement.textContent = '';
+
+            // Appliquer le même effet de fondu que pour handleInput()
+            currentExampleElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            currentExampleElement.style.opacity = '0';
+            currentExampleElement.style.transform = 'translateY(-10px)';
+
+            // Après l'animation, masquer complètement l'élément
+            setTimeout(() => {
+                currentExampleElement.style.display = 'none';
+            }, 300);
+
+            // Masquer la section de résultat
+            document.getElementById('result-section').classList.add('hidden');
+
+            // Masquer la section de partage
+            document.getElementById('share-section').classList.add('hidden');
+
+            // Réinitialiser le texte du résultat
+            document.getElementById('result-text').textContent = '';
+        }
+
+        // Charger un exemple aléatoire au chargement de la page
+        // Ne pas charger d'exemple automatiquement au chargement de la page
+        // L'utilisateur devra cliquer sur le bouton pour charger un exemple
+
+        // Fonction pour partager sur WhatsApp
+        function shareOnWhatsApp() {
+            const resultText = document.getElementById('result-text').textContent;
+            if (resultText.trim() === "") {
+                alert("Aucun résultat à partager. Veuillez d'abord effectuer un calcul.");
+                return;
+            }
+
+            const message = `Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}\n\n${window.location.href}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Fonction pour partager sur X (Twitter)
+        function shareOnTwitter() {
+            const resultText = document.getElementById('result-text').textContent;
+            if (resultText.trim() === "") {
+                alert("Aucun résultat à partager. Veuillez d'abord effectuer un calcul.");
+                return;
+            }
+
+            const message = `Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(twitterUrl, '_blank');
+        }
+    </script>
 </body>
 </html>

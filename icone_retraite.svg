@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Arrière-plan -->
+  <rect width="100" height="100" fill="#4CAF50"/>
+  
+  <!-- Corps du personnage -->
+  <circle cx="50" cy="45" r="20" fill="white"/> <!-- Tête -->
+  
+  <!-- Chapeau de retraité aisé -->
+  <path d="M35,30 Q50,15 65,30 L60,35 Q50,25 40,35 Z" fill="#8B4513"/> <!-- Chapeau haut-de-forme -->
+  
+  <!-- Visage -->
+  <circle cx="45" cy="40" r="2" fill="black"/> <!-- Oeil gauche -->
+  <circle cx="55" cy="40" r="2" fill="black"/> <!-- Oeil droit -->
+  <path d="M45,50 Q50,55 55,50" stroke="black" stroke-width="1.5" fill="none"/> <!-- Sourire -->
+  
+  <!-- Moustache fine -->
+  <path d="M42,47 Q50,45 58,47" stroke="black" stroke-width="1.5" fill="none"/>
+  
+  <!-- Cravate élégante -->
+  <path d="M48,55 L45,70 Q50,75 55,70 L52,55 Z" fill="#FFD700"/> <!-- Cravate dorée -->
+  
+  <!-- Montre de gousset -->
+  <circle cx="60" cy="55" r="4" fill="#C0C0C0"/> <!-- Montre -->
+  <path d="M60,51 L60,48" stroke="#C0C0C0" stroke-width="1.5"/> <!-- Chaîne de montre -->
+</svg>
