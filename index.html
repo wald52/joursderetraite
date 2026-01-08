@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculatrice d'équivalent Retraites - Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <meta name="description" content="Combien de temps représente un montant en années, mois, jours de retraites versées en France ? Combien d'objets peut-on acheter avec cette somme ?">
     <title>Calculatrice d'équivalent Retraites 2025</title>
-    
+
     <!-- Balises Open Graph pour le partage sur les réseaux sociaux -->
     <meta property="og:title" content="Calculatrice d'équivalent Retraites 2025">
-    <meta property="og:description" content="Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <meta property="og:description" content="Combien de temps représente un montant en années, mois, jours de retraites versées en France ? Combien d'objets peut-on acheter avec cette somme ?">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://replacing-antique-dialog-lite.trycloudflare.com">
     <meta property="og:image" content="https://replacing-antique-dialog-lite.trycloudflare.com/icon-512x512.png">
     <meta property="og:locale" content="fr_FR">
-    
+
     <!-- Balises Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Calculatrice d'équivalent Retraites 2025">
-    <meta name="twitter:description" content="Convertissez des montants en équivalent temps de retraites versées en France. Découvrez combien de temps représente un montant en années, mois, jours, heures, minutes et secondes de retraites.">
+    <meta name="twitter:description" content="Combien de temps représente un montant en années, mois, jours de retraites versées en France ? Combien d'objets peut-on acheter avec cette somme ?">
     <meta name="twitter:image" content="https://replacing-antique-dialog-lite.trycloudflare.com/icon-512x512.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -39,40 +39,42 @@
             }
         }
     </script>
+    <script src="script.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
+
         .glass-card {
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
-        
+
         .dark .glass-card {
             background: rgba(10, 10, 15, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         .gradient-btn {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #1f54a1 0%, #6b8cbc 50%, #e7ae25 100%); /* Bleu → bleu clair → orange */
             transition: all 0.3s ease;
         }
-        
+
         .gradient-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(31, 84, 161, 0.3);
         }
-        
+
         .result-item {
             animation: fadeInUp 0.6s ease-out;
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -83,124 +85,476 @@
                 transform: translateY(0);
             }
         }
-        
+
         .counter-animation {
             animation: counterAnimation 1s ease-out;
         }
-        
+
         @keyframes counterAnimation {
             0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
+
+        .input-field {
+            transition: all 0.3s ease;
+        }
+
+        .numeric-input {
+            text-align: right;
+        }
+
         .input-field:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            border-color: #1f54a1;
+            box-shadow: 0 0 0 3px rgba(31, 84, 161, 0.2);
         }
-        
+
+        .dark .input-field {
+            background-color: #1a1a23;
+            border-color: #2d3748;
+            color: #fff;
+        }
+
         .share-btn {
             transition: all 0.3s ease;
         }
-        
+
         .share-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
         }
+
+        .dark .share-btn {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+
+        .dark .share-btn:hover {
+            background-color: #4a5568;
+        }
+
+        /* Assurer que les sections de partage ne bloquent pas les clics */
+        #share-section-temporal,
+        #share-section-financial {
+            pointer-events: auto;
+        }
+
+        /* Améliorations pour le mode clair */
+        .dark .gradient-btn {
+            background: linear-gradient(135deg, #1f54a1 0%, #6b8cbc 50%, #e7ae25 100%); /* Bleu → bleu clair → orange */
+        }
+
+        .dark .input-field {
+            background-color: #1a1a23;
+            border-color: #2d3748;
+            color: #fff;
+        }
+
+        .dark .bg-gray-200 {
+            background-color: #2d3748 !important;
+        }
+
+        .dark .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+
+        /* Style pour améliorer l'affichage des emojis */
+        .emoji {
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", sans-serif;
+            font-style: normal;
+            font-size: 1.2em;
+        }
+
+        /* Amélioration du mode clair */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .dark .theme-toggle {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .dark .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Ajustement pour éviter que le bouton de thème ne chevauche le titre sur mobile */
+        @media (max-width: 640px) {
+            .theme-toggle {
+                right: 10px;
+                top: 10px;
+                width: 36px;
+                height: 36px;
+            }
+            .container {
+                padding-top: 20px;
+            }
+        }
     </style>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4CAF50">
+    <meta name="theme-color" content="#4CAF50" id="theme-color">
 </head>
 <body class="bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                Calculatrice d'équivalent Retraites
+    <button class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+            <path id="theme-icon" d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+        </svg>
+    </button>
+    <div class="container mx-auto px-4 py-1 max-w-6xl">
+        <header class="text-center mb-1">
+            <h1 class="text-2xl md:text-3xl font-bold mb-0.5 flex flex-col items-center leading-tight">
+                <span class="bg-gradient-to-r from-[#1f54a1] via-[#6b8cbc] to-[#e7ae25] bg-clip-text text-transparent">Calculatrice</span>
+                <span class="bg-gradient-to-r from-[#1f54a1] via-[#6b8cbc] to-[#e7ae25] bg-clip-text text-transparent">d'équivalent retraites</span>
+                <span class="emoji">🛳️</span>
             </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Entrez un montant en euros pour voir son équivalent en années, mois, jours, heures, minutes et secondes de retraites versées en France en 2025.
+            <p class="text-xs text-gray-600 dark:text-gray-300 max-w-xl mx-auto mt-0.5">
+                Combien de temps représente un montant en années, mois, jours de retraites versées en France ? Combien d'objets peut-on acheter avec cette somme ?
             </p>
         </header>
 
         <main>
-            <div class="glass-card rounded-2xl p-6 mb-8 shadow-xl border">
-                <div class="examples-section mb-6">
-                    <button type="button" class="gradient-btn text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg" onclick="setRandomExample()">
-                        <i class="fas fa-random"></i> Charger un exemple
-                    </button>
-                    <div id="current-example" class="mt-3 text-sm text-gray-600 dark:text-gray-300 italic"></div>
+            <div class="glass-card rounded-2xl p-3 mb-2 shadow-xl border">
+                <!-- Boutons de sélection de mode -->
+                <div class="mode-toggle-section mb-3">
+                    <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-dark-700">
+                        <button
+                            id="temporal-mode-btn"
+                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5"
+                            onclick="switchMode('temporal')"
+                        >
+                            <i class="fas fa-clock"></i> Équivalent temps
+                        </button>
+                        <button
+                            id="financial-mode-btn"
+                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5"
+                            onclick="switchMode('financial')"
+                        >
+                            <i class="fas fa-euro-sign"></i> Équivalent budget
+                        </button>
                 </div>
 
-                <div class="input-group">
-                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Montant (en euros) :
+                <!-- Section pour le mode temporel -->
+                <div id="temporal-inputs">
+                    <div class="examples-section mt-3 mb-2">
+                        <button type="button" class="gradient-btn text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-300 hover:shadow-lg" onclick="setRandomExample()">
+                            <i class="fas fa-random"></i> Charger un exemple
+                        </button>
+                        <div id="current-example" class="mt-1.5 text-xs text-gray-600 dark:text-gray-300 italic"></div>
+                    </div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0.5">
+                        Montant (€) :
                     </label>
                     <input
-                        type="number"
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9.,]*"
                         id="amount"
-                        placeholder="Exemple: 5000000"
-                        min="0"
-                        step="any"
-                        class="input-field w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                        oninput="handleInput()"
+                        placeholder="Ex: 5000000"
+                        class="input-field w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
+                        oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this); handleInput()"
+                        onblur="formatNumberOnBlur(this)"
                     >
-                    <div class="button-group flex gap-3 mt-4">
-                        <button 
-                            onclick="calculate()" 
-                            class="gradient-btn text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg"
+                    <div class="button-group flex gap-1.5 mt-1.5">
+                        <button
+                            onclick="formatNumberOnBlur(document.getElementById('amount')); calculate();"
+                            class="gradient-btn text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all duration-300 hover:shadow-lg text-sm"
                         >
                             <i class="fas fa-calculator"></i> Calculer
                         </button>
-                        <button 
-                            type="button" 
-                            onclick="resetForm()" 
-                            class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600"
+                        <button
+                            type="button"
+                            onclick="resetForm()"
+                            class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600 text-sm"
                         >
                             <i class="fas fa-redo"></i> Réinitialiser
                         </button>
                     </div>
                 </div>
+
+                <!-- Section pour le mode financier -->
+                <div id="financial-inputs" class="hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 mb-2">
+                        <div>
+                            <label for="object-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0.5">
+                                Type d'objet :
+                            </label>
+                            <select
+                                id="object-type"
+                                class="input-field w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
+                                onchange="updateObjectPrice()"
+                            >
+                                <option value="">Sélectionnez un objet</option>
+                                <option value="EPR" data-price="24000000000">EPR - Centrale nucléaire (24 milliards €)</option>
+                                <option value="Sous-marin" data-price="9000000000">Sous-marin nucléaire (9 milliards €)</option>
+                                <option value="Porte-avions" data-price="10000000000">Porte-avions nucléaire (10 milliards €)</option>
+                                <option value="Ariane" data-price="100000000">Fusée Ariane 6 (100 millions €)</option>
+                                <option value="JO" data-price="6600000000">JO Paris 2024 (6,6 milliards €)</option>
+                                <option value="Villa" data-price="2500000000">Villa à Monaco (2,5 milliards €)</option>
+                                <option value="Yacht" data-price="60000000">Yacht de luxe (60 millions €)</option>
+                                <option value="Avion présidentiel" data-price="3000000000">Avion présidentiel (3 milliards €)</option>
+                                <option value="Oeuvre Basquiat" data-price="150000000">Œuvre de Basquiat (150 millions €)</option>
+                                <option value="Salaire PDG" data-price="80000000">Salaire annuel d'un PDG du CAC 40 (80 millions €)</option>
+                                <option value="Salaire Mbappé" data-price="40000000">Salaire annuel de Kylian Mbappé (40 millions €)</option>
+                                <option value="Film hollywoodien" data-price="1200000000">Film hollywoodien (1,2 milliard €)</option>
+                                <option value="Ministère Armées" data-price="59946338573">Budget du ministère des Armées 2025 (59,9 milliards €)</option>
+                                <option value="Ministère Éducation" data-price="88642000013">Budget de l'Éducation nationale 2025 (88,6 milliards €)</option>
+                                <option value="Ministère Intérieur" data-price="25257945836">Budget de la sécurité intérieure 2025 (25,3 milliards €)</option>
+                                <option value="Ministère Écologie" data-price="21704135923">Budget de la transition écologique 2025 (21,7 milliards €)</option>
+                                <option value="Ministère Justice" data-price="12682852196">Budget de la justice 2025 (12,7 milliards €)</option>
+                                <option value="Ministère Affaires étrangères" data-price="3456994135">Budget des affaires étrangères 2025 (3,5 milliards €)</option>
+                                <option value="Ministère Culture" data-price="3918028319">Budget de la culture 2025 (3,9 milliards €)</option>
+                                <option value="Ministère Travail" data-price="20009645382">Budget du travail et emploi 2025 (20,0 milliards €)</option>
+                                <option value="Fortune Arnault" data-price="250000000000">Fortune de Bernard Arnault (250 milliards €)</option>
+                                <option value="Valeur Apple" data-price="3000000000000">Valeur boursière d'Apple (3.000 milliards €)</option>
+                                <option value="PIB France" data-price="3000000000000">PIB annuel de la France (3.000 milliards €)</option>
+                                <option value="Coût COVID" data-price="15000000000000">Coût économique global de la pandémie de COVID-19 (15.000 milliards €)</option>
+                                <option value="Coût Katrina" data-price="140000000000">Coût de l'ouragan Katrina (140 milliards €)</option>
+                                <option value="Budget UE" data-price="190000000000">Budget annuel de l'Union Européenne (190 milliards €)</option>
+                                <option value="Valeur or" data-price="12000000000000">Valeur totale de l'or dans le monde (12.000 milliards €)</option>
+                                <option value="Valeur Bitcoin" data-price="1300000000000">Valeur totale du Bitcoin en circulation (1.300 milliards €)</option>
+                                <option value="autre">Autre objet personnalisé</option>
+                            </select>
+                        </div>
+
+                        <div id="custom-object-input" class="hidden">
+                            <label for="object-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Nom de l'objet personnalisé :
+                            </label>
+                            <input
+                                type="text"
+                                id="object-name"
+                                placeholder="Ex: Yacht, Avion..."
+                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div id="object-price-container">
+                            <label for="object-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Montant (€) :
+                            </label>
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                                pattern="[0-9.,]*"
+                                id="object-price"
+                                placeholder="Ex: 24000000000"
+                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
+                                oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
+                                onblur="formatNumberOnBlur(this)"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="time-period" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Période de retraite :
+                            </label>
+                            <select
+                                id="time-period"
+                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
+                            >
+                                <option value="1">1 an</option>
+                                <option value="0.5">6 mois</option>
+                                <option value="0.25">3 mois</option>
+                                <option value="0.1">1 mois</option>
+                                <option value="0.033">10 jours</option>
+                                <option value="0.01">1 jour</option>
+                                <option value="custom">Personnalisé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="custom-period-container" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label for="custom-period" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Durée personnalisée (années) :
+                            </label>
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                                pattern="[0-9.,]*"
+                                id="custom-period"
+                                placeholder="Ex: 0.0027 (1 jour)"
+                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
+                                oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
+                                value="1"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="button-group flex gap-2 mt-2">
+                        <button
+                            onclick="formatNumberOnBlur(document.getElementById('object-price')); calculateComparison();"
+                            class="gradient-btn text-white px-4 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all duration-300 hover:shadow-lg text-sm"
+                        >
+                            <i class="fas fa-calculator"></i> Comparer
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div id="result-section" class="glass-card rounded-2xl p-6 shadow-xl border hidden">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Résultat :</h2>
-                <div id="result-container" class="result-single-line flex flex-wrap gap-4">
-                    <span id="result-text" class="text-lg font-medium text-gray-700 dark:text-gray-300 flex-grow"></span>
-                    <button 
-                        id="copy-btn" 
-                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600"
-                        onclick="copyResult()"
+            <div id="result-section-temporal" class="glass-card rounded-xl py-0.5 px-2 shadow-xl border mt-2 hidden">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Résultat :</h2>
+                        <span id="result-text-temporal" class="text-sm font-medium text-gray-700 dark:text-gray-300 block"></span>
+                        <div id="comparison-result-temporal" class="mt-0.5 hidden">
+                            <span id="comparison-result-text-temporal" class="text-sm font-medium text-green-700 dark:text-green-300 block"></span>
+                        </div>
+                    </div>
+                    <button
+                        id="copy-btn-temporal"
+                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded-lg font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600 text-xs ml-2"
+                        onclick="copyResult('temporal')"
                     >
                         <i class="fas fa-copy"></i> Copier
                     </button>
                 </div>
             </div>
 
-            <div id="share-section" class="glass-card rounded-2xl p-6 shadow-xl border mt-8 hidden">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Partager ce résultat</h3>
-                <div class="flex gap-3">
-                    <button class="share-btn bg-green-500 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2" onclick="shareOnWhatsApp()">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
-                    </button>
-                    <button class="share-btn bg-blue-400 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2" onclick="shareOnTwitter()">
-                        <i class="fab fa-x-twitter"></i> X (Twitter)
+            <div id="share-section-temporal" class="glass-card rounded-xl py-1.5 px-2.5 shadow-xl border mt-2 hidden">
+                <h3 class="text-base font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Partager</h3>
+                <div class="flex flex-wrap gap-1 justify-center">
+                    <button class="share-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-1 min-w-max" onclick="nativeShare('temporal')" title="Partager">
+                        <i class="fas fa-share-alt"></i><span class="hidden sm:inline ml-1">Partager</span>
                     </button>
                 </div>
             </div>
 
-            <div class="install-section text-center mt-12">
-                <button 
-                    id="install-btn" 
-                    class="gradient-btn text-white px-6 py-3 rounded-xl font-medium hidden"
+            <div id="result-section-financial" class="glass-card rounded-xl py-0.5 px-2 shadow-xl border mt-2 hidden">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Résultat :</h2>
+                        <span id="result-text-financial" class="text-sm font-medium text-gray-700 dark:text-gray-300 block"></span>
+                        <div id="comparison-result-financial" class="mt-0.5 hidden">
+                            <span id="comparison-result-text-financial" class="text-sm font-medium text-green-700 dark:text-green-300 block"></span>
+                        </div>
+                    </div>
+                    <button
+                        id="copy-btn-financial"
+                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded-lg font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600 text-xs ml-2"
+                        onclick="copyResult('financial')"
+                    >
+                        <i class="fas fa-copy"></i> Copier
+                    </button>
+                </div>
+            </div>
+
+            <div id="share-section-financial" class="glass-card rounded-xl py-1.5 px-2.5 shadow-xl border mt-2 hidden">
+                <h3 class="text-base font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Partager</h3>
+                <div class="flex flex-wrap gap-1 justify-center">
+                    <button class="share-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-1 min-w-max" onclick="nativeShare('financial')" title="Partager">
+                        <i class="fas fa-share-alt"></i><span class="hidden sm:inline ml-1">Partager</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-section text-center mt-6">
+                <button
+                    id="install-btn"
+                    class="gradient-btn text-white px-4 py-2 rounded-lg font-medium text-sm hidden mx-auto"
                     onclick="promptInstall()"
                 >
-                    <i class="fas fa-download"></i> Installer l'application
+                    <i class="fas fa-download"></i> Installer l'app
                 </button>
             </div>
+
+            <!-- Bouton pour afficher/masquer la méthodologie -->
+            <div class="text-center mt-4">
+                <button
+                    id="toggle-methodology"
+                    class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-1.5 mx-auto transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600"
+                    onclick="toggleMethodology()"
+                >
+                    <i class="fas fa-book-open"></i> <span id="methodology-toggle-text">Voir la méthodologie</span>
+                </button>
+            </div>
+
+            <!-- Section Méthodologie -->
+            <div id="methodology-section" class="glass-card rounded-xl py-4 px-4 shadow-xl border mt-6 hidden">
+                <h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center">
+                    <i class="fas fa-calculator mr-2"></i> Méthodologie de calcul
+                </h2>
+                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                    <p>Cette application calcule l'équivalent en temps de retraites versées en France à partir d'un montant financier donné.</p>
+
+                    <div class="mt-3">
+                        <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Formule de calcul :</h3>
+                        <div class="bg-gray-100 dark:bg-dark-800 p-3 rounded-lg font-mono text-xs overflow-x-auto">
+                            Temps équivalent = (Montant / Total retraites annuelles) × (365.25 × 24 × 60 × 60)
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Données utilisées :</h3>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Total des retraites versées en France en 2025 :</strong> 420 milliards d'euros</li>
+                            <li><strong>Année moyenne :</strong> 365.25 jours (prise en compte des années bissextiles)</li>
+                            <li><strong>Mois moyen :</strong> 30.44 jours (365.25 ÷ 12)</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-3">
+                        <h3 class="font-medium text-gray-800 dark:text-gray-200 mb-1">Exemple :</h3>
+                        <p>Si vous entrez 21 milliards d'euros :</p>
+                        <ul class="list-disc pl-5 space-y-1 mt-1">
+                            <li>21 milliards ÷ 420 milliards = 0.05 (5% des retraites annuelles)</li>
+                            <li>5% d'une année = 0.05 × 365.25 jours = 18.26 jours</li>
+                            <li>Ce qui équivaut à environ <strong>18 jours, 6 heures et 18 minutes</strong> de retraites versées</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-3 bg-blue-50 dark:bg-dark-800 border border-blue-200 dark:border-dark-600 p-3 rounded-lg">
+                        <p class="text-blue-800 dark:text-blue-200 text-xs italic">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Les données de retraite sont basées sur les chiffres officiels de la CNAV et des caisses de retraite complémentaire pour l'année 2025.
+                            Ces montants incluent les pensions de retraite de base et complémentaires versées à l'ensemble des retraités français.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <script>
+        // Gestion du rechargement forcé pour la couleur du thème
+        window.addEventListener('load', function() {
+            // Restaurer la position de scroll si nécessaire
+            if (sessionStorage.getItem('scrollPosition')) {
+                const scrollPosition = parseInt(sessionStorage.getItem('scrollPosition'));
+                setTimeout(() => {
+                    window.scrollTo(0, scrollPosition);
+                }, 100);
+                sessionStorage.removeItem('scrollPosition');
+            }
+            
+            // Si c'est un rechargement forcé pour le thème, ne pas recharger à nouveau
+            if (sessionStorage.getItem('forceThemeUpdate')) {
+                sessionStorage.removeItem('forceThemeUpdate');
+            }
+        });
+
         // Tableau des exemples de valeurs célèbres
         const examples = [
             { value: 1500000000, label: "1,5Mds € - Budget annuel de l'UNESCO" },
@@ -212,7 +566,28 @@
             { value: 80000000, label: "80M € - Salaire annuel d'un PDG du CAC 40" },
             { value: 3000000000, label: "3Mds € - Coût d'un avion présidentiel" },
             { value: 60000000, label: "60M € - Prix d'un yacht de luxe" },
-            { value: 1200000000, label: "1,2Mds € - Budget d'un film hollywoodien" }
+            { value: 1200000000, label: "1,2Mds € - Budget d'un film hollywoodien" },
+            { value: 59946338573, label: "59,9Mds € - Budget du ministère des Armées 2025" },
+            { value: 88642000013, label: "88,6Mds € - Budget de l'Éducation nationale 2025" },
+            { value: 25257945836, label: "25,3Mds € - Budget de la sécurité intérieure 2025" },
+            { value: 21704135923, label: "21,7Mds € - Budget de la transition écologique 2025" },
+            { value: 12682852196, label: "12,7Mds € - Budget de la justice 2025" },
+            { value: 3456994135, label: "3,5Mds € - Budget des affaires étrangères 2025" },
+            { value: 3918028319, label: "3,9Mds € - Budget de la culture 2025" },
+            { value: 20009645382, label: "20,0Mds € - Budget du travail et emploi 2025" },
+            { value: 12000000000000, label: "12.000Mds € - Valeur totale de l'or dans le monde (210.000 tonnes à 60.000€/kg)" },
+            { value: 1300000000000, label: "1.300Mds € - Valeur totale du Bitcoin en circulation (19,9M BTC à 65.000€/BTC)" },
+            { value: 6600000000, label: "6,6Mds € - Coût des JO Paris 2024" },
+            { value: 9000000000, label: "9,0Mds € - Coût d'un sous-marin nucléaire français (classe Suffren)" },
+            { value: 24000000000, label: "24,0Mds € - Coût d'une centrale nucléaire EPR (comme Flamanville)" },
+            { value: 10000000000, label: "10,0Mds € - Coût d'un porte-avions nucléaire nouvelle génération (PANG)" },
+            { value: 100000000, label: "100M € - Coût d'une fusée Ariane 6 (lancement)" },
+            { value: 250000000000, label: "250Mds € - Fortune de Bernard Arnault (2025)" },
+            { value: 3000000000000, label: "3.000Mds € - Valeur boursière d'Apple (2025)" },
+            { value: 3000000000000, label: "3.000Mds € - PIB annuel de la France (2025)" },
+            { value: 15000000000000, label: "15.000Mds € - Coût économique global de la pandémie de COVID-19" },
+            { value: 140000000000, label: "140Mds € - Coût de l'ouragan Katrina (2025 ajusté)" },
+            { value: 190000000000, label: "190Mds € - Budget annuel de l'Union Européenne" }
         ];
 
         // Variable pour stocker l'événement d'installation différée
@@ -224,7 +599,10 @@
                 navigator.serviceWorker.register('sw.js')
                     .then(function(registration) {
                         console.log('ServiceWorker enregistré avec succès:', registration.scope);
-                        
+
+                        // Afficher un message informant que l'application est disponible hors ligne
+                        showOfflineNotification();
+
                         // Vérifier si l'événement beforeinstallprompt est disponible
                         window.addEventListener('beforeinstallprompt', (event) => {
                             console.log('Événement beforeinstallprompt déclenché');
@@ -232,7 +610,7 @@
                             event.preventDefault();
                             // Stocke l'événement pour une utilisation ultérieure
                             deferredPrompt = event;
-                            
+
                             // Afficher le bouton d'installation
                             const installBtn = document.getElementById('install-btn');
                             if (installBtn) {
@@ -244,232 +622,99 @@
                         console.log('Échec de l\'enregistrement du ServiceWorker:', error);
                     });
             });
-        }
 
-        // Fonction pour déclencher l'invite d'installation
-        function promptInstall() {
-            if (deferredPrompt) {
-                // Affiche l'invite d'installation
-                deferredPrompt.prompt();
-                
-                // Attend la réponse de l'utilisateur
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    console.log('Choix de l\'utilisateur:', choiceResult.outcome);
-                    
-                    // Indépendamment du choix, on masque le bouton
-                    const installBtn = document.getElementById('install-btn');
-                    if (installBtn) {
-                        installBtn.classList.add('hidden');
-                    }
-                    
-                    // Réinitialise l'événement différé
-                    deferredPrompt = null;
-                });
-            }
-        }
+            // Gestion de l'état de connexion
+            window.addEventListener('online', function() {
+                console.log('Connexion réseau rétablie');
+                hideOfflineIndicator();
+            });
 
-        // Fonction pour obtenir un exemple aléatoire
-        function getRandomExample() {
-            const randomIndex = Math.floor(Math.random() * examples.length);
-            return examples[randomIndex];
-        }
-
-        // Fonction pour définir une valeur d'exemple
-        function setExampleValue(value) {
-            document.getElementById('amount').value = value;
-            // Déclencher le calcul automatiquement
-            calculate();
-        }
-
-        // Fonction pour définir un exemple aléatoire
-        function setRandomExample() {
-            const randomExample = getRandomExample();
-            document.getElementById('amount').value = randomExample.value;
-
-            // Mettre à jour l'affichage de l'exemple actuel
-            const currentExampleElement = document.getElementById('current-example');
-
-            // Réinitialiser les propriétés CSS pour permettre l'affichage
-            currentExampleElement.style.transition = '';
-            currentExampleElement.style.opacity = '';
-            currentExampleElement.style.transform = '';
-            currentExampleElement.style.display = 'block';
-
-            currentExampleElement.textContent = randomExample.label;
-
-            // Déclencher le calcul automatiquement
-            calculate();
-        }
-
-        // Fonction pour calculer l'équivalent retraites
-        function calculate() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (isNaN(amount) || amount < 0) {
-                alert("Veuillez entrer un montant valide.");
-                return;
-            }
-
-            // Montant total des retraites versées en France en 2025
-            const totalRetraites = 420e9; // 420 milliards d'euros
-
-            // Calcul du ratio
-            const ratio = amount / totalRetraites;
-
-            // Nombre de secondes dans une année (en prenant en compte les années bissextiles)
-            const secondsInYear = 365.25 * 24 * 60 * 60;
-            
-            // Calcul des secondes équivalentes
-            const equivalentSeconds = ratio * secondsInYear;
-
-            // Conversion en années, mois, jours, heures, minutes et secondes
-            const secondsInDay = 24 * 60 * 60;
-            const secondsInHour = 60 * 60;
-            const secondsInMinute = 60;
-            
-            // Calcul des années
-            const years = Math.floor(equivalentSeconds / (365.25 * secondsInDay));
-            const remainingSecondsAfterYears = equivalentSeconds % (365.25 * secondsInDay);
-            
-            // Calcul des mois (moyenne de 30.44 jours par mois : 365.25/12)
-            const monthsInYear = 12;
-            const daysInMonth = 365.25 / monthsInYear; // ≈ 30.44 jours
-            const secondsInMonth = daysInMonth * secondsInDay;
-            
-            const months = Math.floor(remainingSecondsAfterYears / secondsInMonth);
-            const remainingSecondsAfterMonths = remainingSecondsAfterYears % secondsInMonth;
-            
-            // Calcul des jours, heures, minutes et secondes
-            const days = Math.floor(remainingSecondsAfterMonths / secondsInDay);
-            const remainingSecondsAfterDays = remainingSecondsAfterMonths % secondsInDay;
-            const hours = Math.floor(remainingSecondsAfterDays / secondsInHour);
-            const remainingSecondsAfterHours = remainingSecondsAfterDays % secondsInHour;
-            const minutes = Math.floor(remainingSecondsAfterHours / secondsInMinute);
-            const seconds = Math.floor(remainingSecondsAfterHours % secondsInMinute);
-
-            // Formatage du résultat sur une seule ligne (sans virgules, affichage uniquement des valeurs > 0, avec accord au singulier/pluriel)
-            const resultParts = [];
-            if (years > 0) resultParts.push(`${years} ${years === 1 ? 'année' : 'années'}`);
-            if (months > 0) resultParts.push(`${months} ${months === 1 ? 'mois' : 'mois'}`); // 'mois' est invariable
-            if (days > 0) resultParts.push(`${days} ${days === 1 ? 'jour' : 'jours'}`);
-            if (hours > 0) resultParts.push(`${hours} ${hours === 1 ? 'heure' : 'heures'}`);
-            if (minutes > 0) resultParts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
-            if (seconds > 0) resultParts.push(`${seconds} ${seconds === 1 ? 'seconde' : 'secondes'}`);
-            
-            const resultText = resultParts.length > 0 ? resultParts.join(' ') : '0 seconde';
-
-            // Affichage du résultat
-            document.getElementById('result-text').textContent = resultText;
-
-            // Afficher la section de résultat
-            document.getElementById('result-section').classList.remove('hidden');
-            
-            // Afficher la section de partage
-            document.getElementById('share-section').classList.remove('hidden');
-            
-            // Ajouter une animation au résultat
-            document.getElementById('result-text').classList.add('counter-animation');
-            setTimeout(() => {
-                document.getElementById('result-text').classList.remove('counter-animation');
-            }, 1000);
-        }
-
-        // Fonction pour copier le résultat dans le presse-papiers
-        function copyResult() {
-            const resultText = document.getElementById('result-text').textContent;
-            
-            if (resultText.trim() === "") {
-                alert("Aucun résultat à copier. Veuillez d'abord effectuer un calcul.");
-                return;
-            }
-            
-            navigator.clipboard.writeText(resultText).then(function() {
-                // Afficher un message de confirmation temporaire
-                const copyBtn = document.getElementById('copy-btn');
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copié!';
-                
-                setTimeout(function() {
-                    copyBtn.innerHTML = originalText;
-                }, 2000);
-            }).catch(function(err) {
-                console.error('Erreur lors de la copie: ', err);
-                alert('Erreur lors de la copie: ' + err);
+            window.addEventListener('offline', function() {
+                console.log('Mode hors ligne activé');
+                showOfflineIndicator();
             });
         }
 
-        // Fonction pour gérer l'entrée de l'utilisateur
-        function handleInput() {
-            const currentExampleElement = document.getElementById('current-example');
+        // Fonction pour afficher un indicateur de mode hors ligne
+        function showOfflineIndicator() {
+            // Créer un indicateur visuel pour informer l'utilisateur
+            let offlineBanner = document.getElementById('offline-banner');
+            if (!offlineBanner) {
+                offlineBanner = document.createElement('div');
+                offlineBanner.id = 'offline-banner';
+                offlineBanner.style.position = 'fixed';
+                offlineBanner.style.top = '0';
+                offlineBanner.style.left = '0';
+                offlineBanner.style.right = '0';
+                offlineBanner.style.backgroundColor = '#ff6b6b';
+                offlineBanner.style.color = 'white';
+                offlineBanner.style.textAlign = 'center';
+                offlineBanner.style.padding = '8px';
+                offlineBanner.style.zIndex = '10000';
+                offlineBanner.style.fontWeight = 'bold';
+                offlineBanner.style.fontSize = '14px';
+                offlineBanner.innerHTML = 'Mode hors ligne - L\'application est entièrement fonctionnelle';
 
-            // Appliquer un effet de fondu pour masquer l'exemple
-            currentExampleElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-            currentExampleElement.style.opacity = '0';
-            currentExampleElement.style.transform = 'translateY(-10px)';
-
-            // Après l'animation, masquer complètement l'élément
-            setTimeout(() => {
-                currentExampleElement.style.display = 'none';
-            }, 300);
-        }
-
-        // Fonction pour réinitialiser le formulaire
-        function resetForm() {
-            // Réinitialiser le champ de saisie
-            document.getElementById('amount').value = '';
-
-            // Réinitialiser l'affichage de l'exemple
-            const currentExampleElement = document.getElementById('current-example');
-            currentExampleElement.textContent = '';
-
-            // Appliquer le même effet de fondu que pour handleInput()
-            currentExampleElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-            currentExampleElement.style.opacity = '0';
-            currentExampleElement.style.transform = 'translateY(-10px)';
-
-            // Après l'animation, masquer complètement l'élément
-            setTimeout(() => {
-                currentExampleElement.style.display = 'none';
-            }, 300);
-
-            // Masquer la section de résultat
-            document.getElementById('result-section').classList.add('hidden');
-
-            // Masquer la section de partage
-            document.getElementById('share-section').classList.add('hidden');
-
-            // Réinitialiser le texte du résultat
-            document.getElementById('result-text').textContent = '';
-        }
-
-        // Charger un exemple aléatoire au chargement de la page
-        // Ne pas charger d'exemple automatiquement au chargement de la page
-        // L'utilisateur devra cliquer sur le bouton pour charger un exemple
-
-        // Fonction pour partager sur WhatsApp
-        function shareOnWhatsApp() {
-            const resultText = document.getElementById('result-text').textContent;
-            if (resultText.trim() === "") {
-                alert("Aucun résultat à partager. Veuillez d'abord effectuer un calcul.");
-                return;
+                document.body.appendChild(offlineBanner);
+            } else {
+                offlineBanner.style.display = 'block';
             }
-
-            const message = `Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}\n\n${window.location.href}`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
         }
 
-        // Fonction pour partager sur X (Twitter)
-        function shareOnTwitter() {
-            const resultText = document.getElementById('result-text').textContent;
-            if (resultText.trim() === "") {
-                alert("Aucun résultat à partager. Veuillez d'abord effectuer un calcul.");
-                return;
+        // Fonction pour cacher l'indicateur de mode hors ligne
+        function hideOfflineIndicator() {
+            const offlineBanner = document.getElementById('offline-banner');
+            if (offlineBanner) {
+                offlineBanner.style.display = 'none';
             }
-
-            const message = `Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}`;
-            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(window.location.href)}`;
-            window.open(twitterUrl, '_blank');
         }
+
+        // Fonction pour afficher une notification que l'application est disponible hors ligne
+        function showOfflineNotification() {
+            // Petite notification discrète pour informer l'utilisateur
+            console.log('Application disponible hors ligne');
+        }
+
+        // Fonction pour afficher/masquer la section méthodologie
+        function toggleMethodology() {
+            const methodologySection = document.getElementById('methodology-section');
+            const toggleButton = document.getElementById('toggle-methodology');
+            const toggleText = document.getElementById('methodology-toggle-text');
+
+            if (methodologySection.classList.contains('hidden')) {
+                methodologySection.classList.remove('hidden');
+                toggleText.textContent = 'Masquer la méthodologie';
+                toggleButton.innerHTML = '<i class="fas fa-book-open"></i> <span id="methodology-toggle-text">Masquer la méthodologie</span>';
+            } else {
+                methodologySection.classList.add('hidden');
+                toggleText.textContent = 'Voir la méthodologie';
+                toggleButton.innerHTML = '<i class="fas fa-book-open"></i> <span id="methodology-toggle-text">Voir la méthodologie</span>';
+            }
+        }
+
+        // Fonction pour gérer l'affichage du champ personnalisé
+        document.addEventListener('DOMContentLoaded', function() {
+            const timePeriodSelect = document.getElementById('time-period');
+            const customPeriodContainer = document.getElementById('custom-period-container');
+
+            timePeriodSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customPeriodContainer.classList.remove('hidden');
+                } else {
+                    customPeriodContainer.classList.add('hidden');
+                }
+            });
+
+            // Activer le mode temporel par défaut
+            switchMode('temporal');
+        });
+
+
+
+
+
+
+
     </script>
 </body>
 </html>
