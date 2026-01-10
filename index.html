@@ -95,6 +95,122 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        .examples-section {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .examples-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1f54a1, #6b8cbc, #e7ae25);
+            opacity: 0.7;
+        }
+
+        .result-glow {
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-glow {
+            position: relative;
+        }
+
+        .result-glow > span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .result-glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 0.75rem; /* Correspond à rounded-xl */
+            background: linear-gradient(135deg, rgba(31, 84, 161, 0.1), rgba(231, 174, 37, 0.1));
+            z-index: 1;
+            animation: glow-pulse 3s infinite alternate;
+        }
+
+        .result-text-glow {
+            position: relative;
+            z-index: 3;
+            text-shadow:
+                0 0 5px rgba(31, 84, 161, 0.3),
+                0 0 10px rgba(31, 84, 161, 0.2),
+                0 0 15px rgba(231, 174, 37, 0.3),
+                0 0 20px rgba(231, 174, 37, 0.2);
+            animation: text-glow-pulse 3s infinite alternate;
+        }
+
+        @keyframes glow-pulse {
+            0% {
+                box-shadow: inset 0 0 10px rgba(31, 84, 161, 0.2), inset 0 0 20px rgba(231, 174, 37, 0.1);
+            }
+            100% {
+                box-shadow: inset 0 0 20px rgba(31, 84, 161, 0.4), inset 0 0 30px rgba(231, 174, 37, 0.2);
+            }
+        }
+
+        @keyframes text-glow-pulse {
+            0% {
+                text-shadow:
+                    0 0 5px rgba(31, 84, 161, 0.3),
+                    0 0 10px rgba(31, 84, 161, 0.2),
+                    0 0 15px rgba(231, 174, 37, 0.3),
+                    0 0 20px rgba(231, 174, 37, 0.2);
+            }
+            100% {
+                text-shadow:
+                    0 0 10px rgba(31, 84, 161, 0.5),
+                    0 0 15px rgba(31, 84, 161, 0.3),
+                    0 0 20px rgba(231, 174, 37, 0.5),
+                    0 0 25px rgba(231, 174, 37, 0.3);
+            }
+        }
+
+        .result-section-glow {
+            position: relative;
+        }
+
+        .result-section-glow::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 1.5rem; /* Correspond à rounded-2xl */
+            background: linear-gradient(45deg, #1f54a1, #e7ae25, #1f54a1, #e7ae25);
+            background-size: 400% 400%;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.6;
+            animation: result-glow-animation 4s ease-in-out infinite;
+        }
+
+        @keyframes result-glow-animation {
+            0% {
+                background-position: 0% 50%;
+                opacity: 0.5;
+            }
+            50% {
+                background-position: 100% 50%;
+                opacity: 0.8;
+            }
+            100% {
+                background-position: 0% 50%;
+                opacity: 0.5;
+            }
+        }
+
         .input-field {
             transition: all 0.3s ease;
         }
@@ -232,20 +348,19 @@
         </header>
 
         <main>
-            <div class="glass-card rounded-2xl p-3 mb-2 shadow-xl border">
                 <!-- Boutons de sélection de mode -->
                 <div class="mode-toggle-section mb-3">
                     <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-dark-700">
                         <button
                             id="temporal-mode-btn"
-                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5"
+                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5 bg-white dark:bg-dark-800 shadow text-gray-800 dark:text-gray-200"
                             onclick="switchMode('temporal')"
                         >
                             <i class="fas fa-clock"></i> Équivalent temps
                         </button>
                         <button
                             id="financial-mode-btn"
-                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5"
+                            class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all duration-300 flex items-center justify-center gap-1.5 bg-gray-200 dark:bg-dark-700"
                             onclick="switchMode('financial')"
                         >
                             <i class="fas fa-euro-sign"></i> Équivalent budget
@@ -254,25 +369,29 @@
 
                 <!-- Section pour le mode temporel -->
                 <div id="temporal-inputs">
-                    <div class="examples-section mt-3 mb-2">
-                        <button type="button" class="gradient-btn text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-300 hover:shadow-lg" onclick="setRandomExample()">
-                            <i class="fas fa-random"></i> Charger un exemple
-                        </button>
-                        <div id="current-example" class="mt-1.5 text-xs text-gray-600 dark:text-gray-300 italic"></div>
+                    <div class="examples-section mt-3 mb-3 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-orange-50 dark:from-dark-800 dark:to-dark-700 border border-blue-100 dark:border-dark-600">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                            <button id="example-button" type="button" class="gradient-btn text-white px-4 py-2 rounded-lg text-base font-medium flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-lg w-auto min-w-[180px] max-w-full" onclick="setRandomExample()">
+                                <i class="fas fa-random"></i> <span id="example-button-text">Charger un exemple</span>
+                            </button>
+                            <div id="current-example" class="text-sm text-gray-700 dark:text-gray-300 italic text-center sm:text-right w-full sm:w-auto bg-white dark:bg-dark-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-dark-600 min-h-[38px] flex items-center justify-center" style="display: none; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;"></div>
+                        </div>
                     </div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0.5">
-                        Montant (€) :
-                    </label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        pattern="[0-9.,]*"
-                        id="amount"
-                        placeholder="Ex: 5000000"
-                        class="input-field w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
-                        oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this); handleInput()"
-                        onblur="formatNumberOnBlur(this)"
-                    >
+                    <div class="relative mt-1">
+                        <input
+                            type="text"
+                            inputmode="numeric"
+                            pattern="[0-9.,]*"
+                            id="amount"
+                            placeholder="Entrez un montant en € (ex: 5 000 000)"
+                            class="input-field w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base numeric-input shadow-sm focus:shadow-md"
+                            oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this); handleInput()"
+                            onblur="formatNumberOnBlur(this)"
+                        >
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-euro-sign text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                    </div>
                     <div class="button-group flex gap-1.5 mt-1.5">
                         <button
                             onclick="formatNumberOnBlur(document.getElementById('amount')); calculate();"
@@ -297,12 +416,13 @@
                             <label for="object-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0.5">
                                 Type d'objet :
                             </label>
-                            <select
-                                id="object-type"
-                                class="input-field w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
-                                onchange="updateObjectPrice()"
-                            >
-                                <option value="">Sélectionnez un objet</option>
+                            <div class="relative mt-1">
+                                <select
+                                    id="object-type"
+                                    class="input-field w-full pl-10 pr-10 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base shadow-sm focus:shadow-md appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1NTUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2LDkgMTIsMTUgMTgsOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[right_1rem_center]"
+                                    onchange="updateObjectPrice()"
+                                >
+                                    <option value="">Sélectionnez un objet</option>
                                 <option value="EPR" data-price="24000000000">EPR - Centrale nucléaire (24 milliards €)</option>
                                 <option value="Sous-marin" data-price="9000000000">Sous-marin nucléaire (9 milliards €)</option>
                                 <option value="Porte-avions" data-price="10000000000">Porte-avions nucléaire (10 milliards €)</option>
@@ -314,13 +434,38 @@
                                 <option value="Oeuvre Basquiat" data-price="150000000">Œuvre de Basquiat (150 millions €)</option>
                                 <option value="Salaire PDG" data-price="80000000">Salaire annuel d'un PDG du CAC 40 (80 millions €)</option>
                                 <option value="Salaire Mbappé" data-price="40000000">Salaire annuel de Kylian Mbappé (40 millions €)</option>
-                                <option value="Film hollywoodien" data-price="1200000000">Film hollywoodien (1,2 milliard €)</option>
+                                <option value="Avatar" data-price="237000000">Avatar (2009) (237 millions €)</option>
                                 <option value="Ministère Armées" data-price="59946338573">Budget du ministère des Armées 2025 (59,9 milliards €)</option>
                                 <option value="Ministère Éducation" data-price="88642000013">Budget de l'Éducation nationale 2025 (88,6 milliards €)</option>
                                 <option value="Ministère Intérieur" data-price="25257945836">Budget de la sécurité intérieure 2025 (25,3 milliards €)</option>
                                 <option value="Ministère Écologie" data-price="21704135923">Budget de la transition écologique 2025 (21,7 milliards €)</option>
                                 <option value="Ministère Justice" data-price="12682852196">Budget de la justice 2025 (12,7 milliards €)</option>
+                                <option value="Tunnel Manche" data-price="15000000000">Tunnel sous la Manche (15 milliards €)</option>
+                                <option value="Projet Manhattan" data-price="30000000000">Projet Manhattan (30 milliards €)</option>
+                                <option value="Plan Mesmer" data-price="100000000000">Plan Mésmer (100 milliards €)</option>
+                                <option value="Programme Apollo" data-price="280000000000">Programme Apollo (280 milliards €)</option>
+                                <option value="LHC" data-price="13000000000">Grand collisionneur de hadrons (13 milliards €)</option>
+                                <option value="Station spatiale" data-price="150000000000">Station spatiale internationale (150 milliards €)</option>
+                                <option value="Projet ITER" data-price="25000000000">Projet ITER (25 milliards €)</option>
+                                <option value="Tunnel Gothard" data-price="12000000000">Tunnel de base du Gothard (12 milliards €)</option>
+                                <option value="Canal Suez" data-price="4000000000">Grand canal de Suez (4 milliards €)</option>
+                                <option value="Canal Panama" data-price="5800000000">Canal de Panama (5,8 milliards €)</option>
+                                <option value="Canal Midi" data-price="100000000">Canal du Midi (100 millions €)</option>
+                                <option value="Hinkley Point" data-price="32000000000">Centrale de Hinkley Point C (32 milliards €)</option>
                                 <option value="Ministère Affaires étrangères" data-price="3456994135">Budget des affaires étrangères 2025 (3,5 milliards €)</option>
+                                <option value="Tour Eiffel" data-price="10000000">Tour Eiffel (10 millions €)</option>
+                                <option value="Mont Saint Michel" data-price="100000000">Mont-Saint-Michel (100 millions €)</option>
+                                <option value="Arc Triomphe" data-price="5000000">Arc de Triomphe (5 millions €)</option>
+                                <option value="Opera Garnier" data-price="15000000">Opéra Garnier (15 millions €)</option>
+                                <option value="Chateau Versailles" data-price="100000000">Château de Versailles (100 millions €)</option>
+                                <option value="Centre Pompidou" data-price="2000000000">Centre Pompidou (2 milliards €)</option>
+                                <option value="Grande Arche Defanse" data-price="2500000000">Grande Arche de La Défense (2,5 milliards €)</option>
+                                <option value="Opera Bastille" data-price="1500000000">Opéra Bastille (1,5 milliard €)</option>
+                                <option value="Pyramide Louvre" data-price="150000000">Pyramide du Louvre (150 millions €)</option>
+                                <option value="Stade France" data-price="400000000">Stade de France (400 millions €)</option>
+                                <option value="Pont Normandie" data-price="700000000">Pont de Normandie (700 millions €)</option>
+                                <option value="Pont Millau" data-price="400000000">Pont de Millau (400 millions €)</option>
+                                <option value="Jardin Luxembourg" data-price="50000000">Jardin du Luxembourg (50 millions €)</option>
                                 <option value="Ministère Culture" data-price="3918028319">Budget de la culture 2025 (3,9 milliards €)</option>
                                 <option value="Ministère Travail" data-price="20009645382">Budget du travail et emploi 2025 (20,0 milliards €)</option>
                                 <option value="Fortune Arnault" data-price="250000000000">Fortune de Bernard Arnault (250 milliards €)</option>
@@ -336,43 +481,48 @@
                         </div>
 
                         <div id="custom-object-input" class="hidden">
-                            <label for="object-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Nom de l'objet personnalisé :
-                            </label>
-                            <input
-                                type="text"
-                                id="object-name"
-                                placeholder="Ex: Yacht, Avion..."
-                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
-                            >
+                            <div class="relative mt-1">
+                                <input
+                                    type="text"
+                                    id="object-name"
+                                    placeholder="Nom de l'objet personnalisé (ex: Yacht, Avion...)"
+                                    class="input-field w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base shadow-sm focus:shadow-md"
+                                >
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-tag text-gray-400 dark:text-gray-500"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div id="object-price-container">
-                            <label for="object-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Montant (€) :
-                            </label>
-                            <input
-                                type="text"
-                                inputmode="numeric"
-                                pattern="[0-9.,]*"
-                                id="object-price"
-                                placeholder="Ex: 24000000000"
-                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
-                                oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
-                                onblur="formatNumberOnBlur(this)"
-                            >
+                            <div class="relative mt-1">
+                                <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="[0-9.,]*"
+                                    id="object-price"
+                                    placeholder="Entrez le montant en € (ex: 24 000 000)"
+                                    class="input-field w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base numeric-input shadow-sm focus:shadow-md"
+                                    oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
+                                    onblur="formatNumberOnBlur(this)"
+                                >
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-euro-sign text-gray-400 dark:text-gray-500"></i>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
-                            <label for="time-period" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="time-period" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0.5">
                                 Période de retraite :
                             </label>
-                            <select
-                                id="time-period"
-                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm"
-                            >
+                            <div class="relative mt-1">
+                                <select
+                                    id="time-period"
+                                    class="input-field w-full pl-10 pr-10 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base shadow-sm focus:shadow-md appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1NTUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2LDkgMTIsMTUgMTgsOSI+PC9wb2x5bGluZT48L3N2Zz4=')] bg-no-repeat bg-[right_1rem_center]"
+                                >
                                 <option value="1">1 an</option>
                                 <option value="0.5">6 mois</option>
                                 <option value="0.25">3 mois</option>
@@ -386,19 +536,21 @@
 
                     <div id="custom-period-container" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
-                            <label for="custom-period" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Durée personnalisée (années) :
-                            </label>
-                            <input
-                                type="text"
-                                inputmode="numeric"
-                                pattern="[0-9.,]*"
-                                id="custom-period"
-                                placeholder="Ex: 0.0027 (1 jour)"
-                                class="input-field w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm numeric-input"
-                                oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
-                                value="1"
-                            >
+                            <div class="relative mt-1">
+                                <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="[0-9.,]*"
+                                    id="custom-period"
+                                    placeholder="Entrez la durée en années (ex: 0,0027 pour 1 jour)"
+                                    class="input-field w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-base numeric-input shadow-sm focus:shadow-md"
+                                    oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
+                                    value="1"
+                                >
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-calendar text-gray-400 dark:text-gray-500"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -411,60 +563,91 @@
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <div id="result-section-temporal" class="glass-card rounded-xl py-0.5 px-2 shadow-xl border mt-2 hidden">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <h2 class="text-xl font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Résultat :</h2>
-                        <span id="result-text-temporal" class="text-sm font-medium text-gray-700 dark:text-gray-300 block"></span>
-                        <div id="comparison-result-temporal" class="mt-0.5 hidden">
-                            <span id="comparison-result-text-temporal" class="text-sm font-medium text-green-700 dark:text-green-300 block"></span>
-                        </div>
-                    </div>
+            <div id="result-section-temporal" class="hidden relative result-section-glow mt-4 mb-2 -mt-0.5">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                        <span class="text-2xl">👵</span> Résultat :
+                    </h2>
                     <button
                         id="copy-btn-temporal"
-                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded-lg font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600 text-xs ml-2"
+                        class="bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 py-1.5 rounded-xl font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg text-sm flex-shrink-0 shadow-md"
                         onclick="copyResult('temporal')"
                     >
                         <i class="fas fa-copy"></i> Copier
                     </button>
                 </div>
+                <div class="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-inner border border-gray-200 dark:border-dark-600 result-glow">
+                    <span id="result-text-temporal" class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 break-words block max-w-full w-full result-text-glow"></span>
+                </div>
+                <div id="comparison-result-temporal" class="mt-3 p-3 bg-blue-50 dark:bg-dark-800 rounded-lg border border-blue-100 dark:border-dark-600 hidden">
+                    <span id="comparison-result-text-temporal" class="text-base font-medium text-green-700 dark:text-green-300 break-words block max-w-full w-full"></span>
+                </div>
             </div>
 
-            <div id="share-section-temporal" class="glass-card rounded-xl py-1.5 px-2.5 shadow-xl border mt-2 hidden">
-                <h3 class="text-base font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Partager</h3>
-                <div class="flex flex-wrap gap-1 justify-center">
-                    <button class="share-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-1 min-w-max" onclick="nativeShare('temporal')" title="Partager">
-                        <i class="fas fa-share-alt"></i><span class="hidden sm:inline ml-1">Partager</span>
+            <div id="share-section-temporal" class="hidden mt-0.5">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <i class="fas fa-share-alt text-blue-500"></i> Partager ce résultat
+                </h3>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button class="share-social-btn bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/50 dark:hover:bg-blue-800 dark:text-blue-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareOnSocial('facebook')" title="Partager sur Facebook">
+                        <i class="fab fa-facebook-f"></i><span>Facebook</span>
+                    </button>
+                    <button class="share-social-btn bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/50 dark:hover:bg-blue-800 dark:text-blue-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareOnSocial('twitter')" title="Partager sur Twitter/X">
+                        <i class="fab fa-twitter"></i><span>Twitter/X</span>
+                    </button>
+                    <button class="share-social-btn bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/50 dark:hover:bg-green-800 dark:text-green-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareVia('email')" title="Partager par Email">
+                        <i class="fas fa-envelope"></i><span>Email</span>
+                    </button>
+                    <button class="share-social-btn bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/50 dark:hover:bg-green-800 dark:text-green-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareVia('sms')" title="Partager par SMS">
+                        <i class="fas fa-comment-sms"></i><span>SMS</span>
+                    </button>
+                    <button class="share-social-btn bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-900/50 dark:hover:bg-purple-800 dark:text-purple-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="nativeShare('temporal')" title="Partager (système)">
+                        <i class="fas fa-share"></i><span>Plus</span>
                     </button>
                 </div>
             </div>
 
-            <div id="result-section-financial" class="glass-card rounded-xl py-0.5 px-2 shadow-xl border mt-2 hidden">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <h2 class="text-xl font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Résultat :</h2>
-                        <span id="result-text-financial" class="text-sm font-medium text-gray-700 dark:text-gray-300 block"></span>
-                        <div id="comparison-result-financial" class="mt-0.5 hidden">
-                            <span id="comparison-result-text-financial" class="text-sm font-medium text-green-700 dark:text-green-300 block"></span>
-                        </div>
-                    </div>
+            <div id="result-section-financial" class="hidden relative result-section-glow mt-4 mb-2 -mt-0.5">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                        <span class="text-2xl">👵</span> Résultat :
+                    </h2>
                     <button
                         id="copy-btn-financial"
-                        class="bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded-lg font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg hover:bg-gray-300 dark:hover:bg-dark-600 text-xs ml-2"
+                        class="bg-gradient-to-b from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-3 py-1.5 rounded-xl font-medium flex items-center gap-1 transition-all duration-300 hover:shadow-lg text-sm flex-shrink-0 shadow-md"
                         onclick="copyResult('financial')"
                     >
                         <i class="fas fa-copy"></i> Copier
                     </button>
                 </div>
+                <div class="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-inner border border-gray-200 dark:border-dark-600 result-glow">
+                    <span id="result-text-financial" class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 break-words block max-w-full w-full result-text-glow"></span>
+                </div>
+                <div id="comparison-result-financial" class="mt-3 p-3 bg-green-50 dark:bg-dark-800 rounded-lg border border-green-100 dark:border-dark-600 hidden">
+                    <span id="comparison-result-text-financial" class="text-base font-medium text-green-700 dark:text-green-300 break-words block max-w-full w-full"></span>
+                </div>
             </div>
 
-            <div id="share-section-financial" class="glass-card rounded-xl py-1.5 px-2.5 shadow-xl border mt-2 hidden">
-                <h3 class="text-base font-semibold mb-0.5 text-gray-800 dark:text-gray-200">Partager</h3>
-                <div class="flex flex-wrap gap-1 justify-center">
-                    <button class="share-btn bg-blue-500 text-white px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-1 min-w-max" onclick="nativeShare('financial')" title="Partager">
-                        <i class="fas fa-share-alt"></i><span class="hidden sm:inline ml-1">Partager</span>
+            <div id="share-section-financial" class="hidden mt-0.5">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <i class="fas fa-share-alt text-blue-500"></i> Partager ce résultat
+                </h3>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button class="share-social-btn bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/50 dark:hover:bg-blue-800 dark:text-blue-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareOnSocial('facebook')" title="Partager sur Facebook">
+                        <i class="fab fa-facebook-f"></i><span>Facebook</span>
+                    </button>
+                    <button class="share-social-btn bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/50 dark:hover:bg-blue-800 dark:text-blue-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareOnSocial('twitter')" title="Partager sur Twitter/X">
+                        <i class="fab fa-twitter"></i><span>Twitter/X</span>
+                    </button>
+                    <button class="share-social-btn bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/50 dark:hover:bg-green-800 dark:text-green-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareVia('email')" title="Partager par Email">
+                        <i class="fas fa-envelope"></i><span>Email</span>
+                    </button>
+                    <button class="share-social-btn bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/50 dark:hover:bg-green-800 dark:text-green-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="shareVia('sms')" title="Partager par SMS">
+                        <i class="fas fa-comment-sms"></i><span>SMS</span>
+                    </button>
+                    <button class="share-social-btn bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-900/50 dark:hover:bg-purple-800 dark:text-purple-300 px-3 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300" onclick="nativeShare('financial')" title="Partager (système)">
+                        <i class="fas fa-share"></i><span>Plus</span>
                     </button>
                 </div>
             </div>
@@ -472,10 +655,10 @@
             <div class="install-section text-center mt-6">
                 <button
                     id="install-btn"
-                    class="gradient-btn text-white px-4 py-2 rounded-lg font-medium text-sm hidden mx-auto"
+                    class="gradient-btn text-white px-4 py-2 rounded-lg font-medium text-sm hidden mx-auto flex items-center gap-1.5"
                     onclick="promptInstall()"
                 >
-                    <i class="fas fa-download"></i> Installer l'app
+                    <i class="fas fa-download"></i> <span>Installer l'app</span>
                 </button>
             </div>
 

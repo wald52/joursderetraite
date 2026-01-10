@@ -7,6 +7,12 @@ let storedTemporalResult = '';
 let storedFinancialResult = '';
 let storedFinancialComparisonResult = '';
 
+// Variable pour suivre si on est en train de calculer
+let isCalculating = false;
+
+// Variable pour suivre le mode actif
+let currentActiveMode = 'temporal'; // 'temporal' ou 'financial'
+
 // Variable pour stocker l'événement d'installation différée
 let deferredPrompt;
 
@@ -139,12 +145,37 @@ const examples = [
     { value: 80000000, label: "80M € - Salaire annuel d'un PDG du CAC 40" },
     { value: 3000000000, label: "3Mds € - Coût d'un avion présidentiel" },
     { value: 60000000, label: "60M € - Prix d'un yacht de luxe" },
-    { value: 1200000000, label: "1,2Mds € - Budget d'un film hollywoodien" },
+    { value: 237000000, label: "237M € - Budget d'Avatar (2009)" },
     { value: 59946338573, label: "59,9Mds € - Budget du ministère des Armées 2025" },
     { value: 88642000013, label: "88,6Mds € - Budget de l'Éducation nationale 2025" },
     { value: 25257945836, label: "25,3Mds € - Budget de la sécurité intérieure 2025" },
+    { value: 15000000000, label: "15Mds € - Tunnel sous la Manche" },
+    { value: 30000000000, label: "30Mds € - Projet Manhattan" },
+    { value: 100000000000, label: "100Mds € - Plan Mésmer" },
+    { value: 280000000000, label: "280Mds € - Programme Apollo" },
+    { value: 13000000000, label: "13Mds € - Grand collisionneur de hadrons" },
+    { value: 150000000000, label: "150Mds € - Station spatiale internationale" },
+    { value: 25000000000, label: "25Mds € - Projet ITER" },
+    { value: 12000000000, label: "12Mds € - Tunnel de base du Gothard" },
+    { value: 4000000000, label: "4Mds € - Grand canal de Suez" },
+    { value: 5800000000, label: "5,8Mds € - Canal de Panama" },
+    { value: 100000000, label: "100M € - Canal du Midi" },
+    { value: 32000000000, label: "32Mds € - Centrale de Hinkley Point C" },
     { value: 21704135923, label: "21,7Mds € - Budget de la transition écologique 2025" },
     { value: 12682852196, label: "12,7Mds € - Budget de la justice 2025" },
+    { value: 10000000, label: "10M € - Tour Eiffel" },
+    { value: 100000000, label: "100M € - Mont-Saint-Michel" },
+    { value: 5000000, label: "5M € - Arc de Triomphe" },
+    { value: 15000000, label: "15M € - Opéra Garnier" },
+    { value: 100000000, label: "100M € - Château de Versailles" },
+    { value: 2000000000, label: "2Mds € - Centre Pompidou" },
+    { value: 2500000000, label: "2,5Mds € - Grande Arche de La Défense" },
+    { value: 1500000000, label: "1,5Mds € - Opéra Bastille" },
+    { value: 150000000, label: "150M € - Pyramide du Louvre" },
+    { value: 400000000, label: "400M € - Stade de France" },
+    { value: 700000000, label: "700M € - Pont de Normandie" },
+    { value: 400000000, label: "400M € - Pont de Millau" },
+    { value: 50000000, label: "50M € - Jardin du Luxembourg" },
     { value: 3456994135, label: "3,5Mds € - Budget des affaires étrangères 2025" },
     { value: 3918028319, label: "3,9Mds € - Budget de la culture 2025" },
     { value: 20009645382, label: "20,0Mds € - Budget du travail et emploi 2025" },
@@ -189,18 +220,29 @@ function setRandomExample() {
     }
 
     const randomExample = getRandomExample();
-    document.getElementById('amount').value = randomExample.value;
+    // Formater le prix avec des espaces insécables
+    const formattedValue = randomExample.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+    document.getElementById('amount').value = formattedValue;
+
+    // Formater le champ avec la fonction de formatage
+    formatNumberInput(document.getElementById('amount'));
 
     // Mettre à jour l'affichage de l'exemple actuel
     const currentExampleElement = document.getElementById('current-example');
 
-    // Réinitialiser les propriétés CSS pour permettre l'affichage
-    currentExampleElement.style.transition = '';
-    currentExampleElement.style.opacity = '';
-    currentExampleElement.style.transform = '';
-    currentExampleElement.style.display = 'block';
-
+    // Afficher la zone d'exemple avec l'information
     currentExampleElement.textContent = randomExample.label;
+    currentExampleElement.style.display = 'block'; // Afficher la zone
+    // Appliquer un effet de fondu pour montrer l'élément
+    currentExampleElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    currentExampleElement.style.opacity = '1';
+    currentExampleElement.style.transform = 'translateY(0)';
+
+    // Changer le texte du bouton pour "Tester un autre exemple"
+    const exampleButtonText = document.getElementById('example-button-text');
+    if (exampleButtonText) {
+        exampleButtonText.textContent = 'Tester un autre exemple';
+    }
 
     // Déclencher le calcul automatiquement
     calculate();
@@ -242,12 +284,21 @@ function resetForm() {
     storedFinancialResult = '';
     storedFinancialComparisonResult = '';
 
+    // Remettre le texte initial du bouton d'exemple
+    const exampleButtonText = document.getElementById('example-button-text');
+    if (exampleButtonText) {
+        exampleButtonText.textContent = 'Charger un exemple';
+    }
+
     // Le bouton de copie est dans la section résultat, donc il est masqué avec la section
     // Pas besoin de le masquer séparément
 }
 
 // Fonction pour basculer entre les modes
 function switchMode(mode) {
+    // Indiquer qu'on est en train de changer de mode
+    isCalculating = true;
+
     const temporalInputs = document.getElementById('temporal-inputs');
     const financialInputs = document.getElementById('financial-inputs');
     const temporalModeBtn = document.getElementById('temporal-mode-btn');
@@ -264,17 +315,25 @@ function switchMode(mode) {
         temporalModeBtn.classList.remove('bg-gray-200', 'dark:bg-dark-700');
         financialModeBtn.classList.add('bg-gray-200', 'dark:bg-dark-700');
 
+        // Réinitialiser complètement les variables du mode financier
+        storedFinancialResult = '';
+        storedFinancialComparisonResult = '';
+
         // Toujours masquer les sections du mode financier lors du passage au mode temporel
         document.getElementById('result-section-financial').classList.add('hidden');
         document.getElementById('share-section-financial').classList.add('hidden');
 
-        // Restaurer les résultats du mode temporel s'ils ont été stockés
+        // Toujours s'assurer que les sections du mode temporel sont prêtes
+        // mais ne pas les afficher si aucun résultat n'est stocké
         if (storedTemporalResult !== '') {
             document.getElementById('result-text-temporal').textContent = storedTemporalResult;
             document.getElementById('result-section-temporal').classList.remove('hidden');
             document.getElementById('share-section-temporal').classList.remove('hidden');
+            // Cacher le conteneur de comparaison dans le mode temporel
+            document.getElementById('comparison-result-temporal').classList.add('hidden');
         } else {
-            // Sinon, masquer les sections si aucun résultat n'est stocké
+            // Préparer les sections pour un futur affichage
+            // mais les garder cachées jusqu'à ce qu'un calcul soit effectué
             document.getElementById('result-section-temporal').classList.add('hidden');
             document.getElementById('share-section-temporal').classList.add('hidden');
         }
@@ -289,16 +348,25 @@ function switchMode(mode) {
         financialModeBtn.classList.remove('bg-gray-200', 'dark:bg-dark-700');
         temporalModeBtn.classList.add('bg-gray-200', 'dark:bg-dark-700');
 
+        // Ne pas réinitialiser les variables du mode temporel - les conserver
+        // pour permettre de revenir au mode temporel avec les résultats intacts
+        // storedTemporalResult = ''; // Commenté pour conserver les résultats
+
         // Toujours masquer les sections du mode temporel lors du passage au mode financier
         document.getElementById('result-section-temporal').classList.add('hidden');
         document.getElementById('share-section-temporal').classList.add('hidden');
 
         // Restaurer les résultats du mode financier s'ils ont été stockés
         if (storedFinancialResult !== '' || storedFinancialComparisonResult !== '') {
-            document.getElementById('result-text-financial').textContent = storedFinancialResult;
+            document.getElementById('result-text-financial').innerHTML = storedFinancialResult;
             document.getElementById('comparison-result-text-financial').innerHTML = storedFinancialComparisonResult;
             document.getElementById('result-section-financial').classList.remove('hidden');
-            document.getElementById('comparison-result-financial').classList.remove('hidden');
+            // Afficher le conteneur de comparaison seulement s'il y a du contenu
+            if (storedFinancialComparisonResult !== '') {
+                document.getElementById('comparison-result-financial').classList.remove('hidden');
+            } else {
+                document.getElementById('comparison-result-financial').classList.add('hidden');
+            }
             document.getElementById('share-section-financial').classList.remove('hidden');
         } else {
             // Sinon, masquer les sections si aucun résultat n'est stocké
@@ -306,6 +374,14 @@ function switchMode(mode) {
             document.getElementById('share-section-financial').classList.add('hidden');
         }
     }
+
+    // Mettre à jour le mode actif
+    currentActiveMode = mode;
+
+    // Réinitialiser la variable isCalculating après un court délai
+    setTimeout(() => {
+        isCalculating = false;
+    }, 50);
 }
 
 // Fonction pour mettre à jour le prix en fonction de l'objet sélectionné
@@ -343,6 +419,18 @@ function updateObjectPrice() {
 
 // Fonction pour calculer l'équivalent retraites
 function calculate() {
+    // Message d'alerte temporaire pour le débogage
+    alert("Fonction calculate() appelée");
+    
+    // Vérifier si on est en mode temporel
+    const temporalInputs = document.getElementById('temporal-inputs');
+
+    if (temporalInputs.classList.contains('hidden')) {
+        // Si on n'est pas en mode temporel, ne pas faire de calcul
+        alert("Nous ne sommes pas en mode temporel. La fonction est ignorée.");
+        return;
+    }
+
     // Récupérer la valeur brute du champ
     const rawValue = document.getElementById('amount').value;
 
@@ -379,23 +467,22 @@ function calculate() {
 
     // Calcul des années
     const years = Math.floor(equivalentSeconds / (365.25 * secondsInDay));
-    const remainingSecondsAfterYears = equivalentSeconds % (365.25 * secondsInDay);
+    let remainingSeconds = equivalentSeconds % (365.25 * secondsInDay);
 
     // Calcul des mois (moyenne de 30.44 jours par mois : 365.25/12)
-    const monthsInYear = 12;
-    const daysInMonth = 365.25 / monthsInYear; // ≈ 30.44 jours
+    const daysInMonth = 365.25 / 12; // ≈ 30.44 jours
     const secondsInMonth = daysInMonth * secondsInDay;
 
-    const months = Math.floor(remainingSecondsAfterYears / secondsInMonth);
-    const remainingSecondsAfterMonths = remainingSecondsAfterYears % secondsInMonth;
+    const months = Math.floor(remainingSeconds / secondsInMonth);
+    remainingSeconds = remainingSeconds % secondsInMonth;
 
     // Calcul des jours, heures, minutes et secondes
-    const days = Math.floor(remainingSecondsAfterMonths / secondsInDay);
-    const remainingSecondsAfterDays = remainingSecondsAfterMonths % secondsInDay;
-    const hours = Math.floor(remainingSecondsAfterDays / secondsInHour);
-    const remainingSecondsAfterHours = remainingSecondsAfterDays % secondsInHour;
-    const minutes = Math.floor(remainingSecondsAfterHours / secondsInMinute);
-    const seconds = Math.floor(remainingSecondsAfterHours % secondsInMinute);
+    const days = Math.floor(remainingSeconds / secondsInDay);
+    remainingSeconds = remainingSeconds % secondsInDay;
+    const hours = Math.floor(remainingSeconds / secondsInHour);
+    remainingSeconds = remainingSeconds % secondsInHour;
+    const minutes = Math.floor(remainingSeconds / secondsInMinute);
+    const seconds = Math.floor(remainingSeconds % secondsInMinute);
 
     // Formatage du résultat sur une seule ligne (sans virgules, affichage uniquement des valeurs > 0, avec accord au singulier/pluriel)
     const resultParts = [];
@@ -409,25 +496,223 @@ function calculate() {
     const resultText = resultParts.length > 0 ? resultParts.join(' ') : '0 seconde';
 
     // Affichage du résultat (temps uniquement)
-    document.getElementById('result-text-temporal').textContent = resultText;
+    const resultElement = document.getElementById('result-text-temporal');
+    if (resultElement) {
+        resultElement.textContent = resultText;
+        console.log("Résultat temporel défini:", resultText);
+    } else {
+        alert("Erreur: L'élément result-text-temporal n'a pas été trouvé !");
+        return;
+    }
 
     // Stocker le résultat pour le conserver lors du changement de mode
     storedTemporalResult = resultText;
+    console.log("Résultat temporel stocké:", storedTemporalResult);
 
     // Cacher la section de comparaison
-    document.getElementById('comparison-result-temporal').classList.add('hidden');
+    const comparisonSection = document.getElementById('comparison-result-temporal');
+    if(comparisonSection) comparisonSection.classList.add('hidden');
 
-    // Afficher la section de résultat
-    document.getElementById('result-section-temporal').classList.remove('hidden');
+    // Afficher les sections de résultat et de partage pour le mode temporel
+    const resultSection = document.getElementById('result-section-temporal');
+    const shareSection = document.getElementById('share-section-temporal');
 
-    // Afficher la section de partage
-    document.getElementById('share-section-temporal').classList.remove('hidden');
+    console.log("Section résultat temporel avant:", resultSection ? resultSection.classList : 'non trouvée');
+    if (resultSection) {
+        resultSection.classList.remove('hidden');
+        console.log("Section résultat temporel après:", resultSection.classList);
+    }
+
+    console.log("Section partage temporel avant:", shareSection ? shareSection.classList : 'non trouvée');
+    if (shareSection) {
+        shareSection.classList.remove('hidden');
+        console.log("Section partage temporel après:", shareSection.classList);
+    }
+
+    // S'assurer que les sections du mode financier sont cachées
+    const financialResultSection = document.getElementById('result-section-financial');
+    const financialShareSection = document.getElementById('share-section-financial');
+    if(financialResultSection) {
+        financialResultSection.classList.add('hidden');
+    }
+    if(financialShareSection) {
+        financialShareSection.classList.add('hidden');
+    }
 
     // Ajouter une animation au résultat
-    document.getElementById('result-text-temporal').classList.add('counter-animation');
-    setTimeout(() => {
-        document.getElementById('result-text-temporal').classList.remove('counter-animation');
-    }, 1000);
+    if (resultElement) {
+        resultElement.classList.add('counter-animation');
+        setTimeout(() => {
+            resultElement.classList.remove('counter-animation');
+        }, 1000);
+    }
+
+    // Faire défiler vers la section de résultat
+    if (resultSection) {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+// Fonction contenant la logique de calcul
+function calculateLogic() {
+    // Indiquer qu'on est en train de calculer
+    isCalculating = true;
+
+    // Vérifier que nous sommes bien en mode temporel
+    const temporalInputs = document.getElementById('temporal-inputs');
+    if (temporalInputs.classList.contains('hidden')) {
+        // Si nous ne sommes pas en mode temporel, ne pas continuer
+        console.error("Erreur: calculateLogic() appelé alors que nous ne sommes pas en mode temporel");
+        isCalculating = false;
+        return;
+    }
+
+    // Récupérer la valeur brute du champ
+    const rawValue = document.getElementById('amount').value;
+
+    // Si le champ est vide, afficher un message approprié
+    if (rawValue.trim() === '') {
+        alert("Veuillez entrer un montant.");
+        isCalculating = false;
+        return;
+    }
+
+    // Extraire le nombre de la valeur du champ
+    const amount = extractNumber(rawValue);
+
+    if (isNaN(amount) || amount < 0) {
+        alert("Veuillez entrer un montant valide.");
+        isCalculating = false;
+        return;
+    }
+
+    // Montant total des retraites versées en France en 2025
+    const totalRetraites = 420e9; // 420 milliards d'euros
+
+    // Calcul du ratio
+    const ratio = amount / totalRetraites;
+
+    // Nombre de secondes dans une année (en prenant en compte les années bissextiles)
+    const secondsInYear = 365.25 * 24 * 60 * 60;
+
+    // Calcul des secondes équivalentes
+    const equivalentSeconds = ratio * secondsInYear;
+
+    // Conversion en années, mois, jours, heures, minutes et secondes
+    const secondsInDay = 24 * 60 * 60;
+    const secondsInHour = 60 * 60;
+    const secondsInMinute = 60;
+
+    // Calcul des années
+    const years = Math.floor(equivalentSeconds / (365.25 * secondsInDay));
+    let remainingSeconds = equivalentSeconds % (365.25 * secondsInDay);
+
+    // Calcul des mois (moyenne de 30.44 jours par mois : 365.25/12)
+    const daysInMonth = 365.25 / 12; // ≈ 30.44 jours
+    const secondsInMonth = daysInMonth * secondsInDay;
+
+    const months = Math.floor(remainingSeconds / secondsInMonth);
+    remainingSeconds = remainingSeconds % secondsInMonth;
+
+    // Calcul des jours, heures, minutes et secondes
+    const days = Math.floor(remainingSeconds / secondsInDay);
+    remainingSeconds = remainingSeconds % secondsInDay;
+    const hours = Math.floor(remainingSeconds / secondsInHour);
+    remainingSeconds = remainingSeconds % secondsInHour;
+    const minutes = Math.floor(remainingSeconds / secondsInMinute);
+    const seconds = Math.floor(remainingSeconds % secondsInMinute);
+
+    // Formatage du résultat sur une seule ligne (sans virgules, affichage uniquement des valeurs > 0, avec accord au singulier/pluriel)
+    const resultParts = [];
+    if (years > 0) resultParts.push(`${years} ${years === 1 ? 'année' : 'années'}`);
+    if (months > 0) resultParts.push(`${months} ${months === 1 ? 'mois' : 'mois'}`); // 'mois' est invariable
+    if (days > 0) resultParts.push(`${days} ${days === 1 ? 'jour' : 'jours'}`);
+    if (hours > 0) resultParts.push(`${hours} ${hours === 1 ? 'heure' : 'heures'}`);
+    if (minutes > 0) resultParts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
+    if (seconds > 0) resultParts.push(`${seconds} ${seconds === 1 ? 'seconde' : 'secondes'}`);
+
+    const resultText = resultParts.length > 0 ? resultParts.join(' ') : '0 seconde';
+
+    // Affichage du résultat (temps uniquement)
+    const resultElement = document.getElementById('result-text-temporal');
+    if (resultElement) {
+        resultElement.textContent = resultText;
+        console.log("Résultat temporel défini:", resultText);
+    } else {
+        alert("Erreur: L'élément result-text-temporal n'a pas été trouvé !");
+        isCalculating = false;
+        return;
+    }
+
+    // Stocker le résultat pour le conserver lors du changement de mode
+    storedTemporalResult = resultText;
+    console.log("Résultat temporel stocké:", storedTemporalResult);
+
+    // Ne pas effacer les résultats du mode financier - les conserver
+    // storedFinancialResult = '';
+    // storedFinancialComparisonResult = '';
+
+    // Cacher la section de comparaison
+    const comparisonSection = document.getElementById('comparison-result-temporal');
+    if(comparisonSection) comparisonSection.classList.add('hidden');
+
+    // Afficher les sections de résultat et de partage pour le mode temporel
+    const resultSection = document.getElementById('result-section-temporal');
+    const shareSection = document.getElementById('share-section-temporal');
+
+    console.log("Section résultat temporel avant:", resultSection ? resultSection.classList : 'non trouvée');
+    if (resultSection) {
+        resultSection.classList.remove('hidden');
+        console.log("Section résultat temporel après:", resultSection.classList);
+    }
+
+    console.log("Section partage temporel avant:", shareSection ? shareSection.classList : 'non trouvée');
+    if (shareSection) {
+        shareSection.classList.remove('hidden');
+        console.log("Section partage temporel après:", shareSection.classList);
+    }
+
+    // S'assurer que les sections du mode financier sont cachées
+    const financialResultSection = document.getElementById('result-section-financial');
+    const financialShareSection = document.getElementById('share-section-financial');
+    if(financialResultSection) {
+        financialResultSection.classList.add('hidden');
+    }
+    if(financialShareSection) {
+        financialShareSection.classList.add('hidden');
+    }
+
+    // Ajouter une animation au résultat
+    if (resultElement) {
+        resultElement.classList.add('counter-animation');
+        setTimeout(() => {
+            resultElement.classList.remove('counter-animation');
+        }, 1000);
+    }
+
+    // Faire défiler vers la section de résultat
+    if (resultSection) {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Terminer le calcul
+    isCalculating = false;
+}
+
+// Fonction pour calculer l'équivalent retraites
+function calculate() {
+    // Vérifier si on est en mode temporel
+    const temporalInputs = document.getElementById('temporal-inputs');
+
+    if (temporalInputs.classList.contains('hidden')) {
+        // Si on n'est pas en mode temporel, ne pas faire de calcul
+        // Cela peut arriver si le bouton est appelé depuis le mode financier
+        console.log("La fonction calculate() a été appelée alors que nous ne sommes pas en mode temporel. Ignoré.");
+        return;
+    }
+
+    // Si on est en mode temporel, exécuter directement la logique de calcul
+    calculateLogic();
 }
 
 // Fonction pour calculer la comparaison
@@ -532,32 +817,44 @@ function calculateComparison() {
 
     // Affichage du résultat principal
     const mainResultText = document.getElementById('result-text-financial');
-    mainResultText.textContent = ''; // Ne pas afficher la durée équivalente dans le mode financier
-
-    // Affichage du résultat de comparaison
-    const comparisonResultText = document.getElementById('comparison-result-text-financial');
+    // Afficher le résultat de comparaison dans le champ principal
     const periodText = getPeriodText(periodMultiplier);
+    mainResultText.innerHTML = 'Avec <strong>' + periodText + '</strong> de retraites (soit environ <strong>' + formatCurrency(periodAmount) + '</strong>), on peut avoir <strong>' + formattedNumber + ' ' + objectName + (numberOfObjects > 1 || numberOfObjects === 0 ? 's' : '') + '</strong> coûtant <strong>' + formatCurrency(objectPrice) + '</strong> chacun.';
 
-    comparisonResultText.innerHTML = 'Avec <strong>' + periodText + '</strong> de retraites (soit environ <strong>' + formatCurrency(periodAmount) + '</strong>), on peut avoir <strong>' + formattedNumber + ' ' + objectName + (numberOfObjects > 1 || numberOfObjects === 0 ? 's' : '') + '</strong> coûtant <strong>' + formatCurrency(objectPrice) + '</strong> chacun.<br><br>';
+    // Le champ de comparaison reste vide dans ce mode
+    const comparisonResultText = document.getElementById('comparison-result-text-financial');
+    comparisonResultText.innerHTML = '';
+
+    // S'assurer que les résultats du mode temporel sont effacés pour éviter les interférences
+    storedTemporalResult = '';
 
     // Stocker les résultats pour les conserver lors du changement de mode
-    storedFinancialResult = mainResultText.textContent;
+    storedFinancialResult = mainResultText.innerHTML;
     storedFinancialComparisonResult = comparisonResultText.innerHTML;
 
     // Afficher les sections du mode financier
     document.getElementById('result-section-financial').classList.remove('hidden');
-    document.getElementById('comparison-result-financial').classList.remove('hidden');
+    document.getElementById('comparison-result-financial').classList.add('hidden'); // On cache le champ de comparaison vide
     document.getElementById('share-section-financial').classList.remove('hidden');
 
     // Masquer les sections du mode temporel
     document.getElementById('result-section-temporal').classList.add('hidden');
     document.getElementById('share-section-temporal').classList.add('hidden');
 
+    // Indiquer qu'on est en train de calculer
+    isCalculating = true;
+
     // Ajouter une animation au résultat
     mainResultText.classList.add('counter-animation');
     setTimeout(() => {
         mainResultText.classList.remove('counter-animation');
     }, 1000);
+
+    // S'assurer qu'on est en mode financier
+    currentActiveMode = 'financial';
+
+    // Terminer le calcul
+    isCalculating = false;
 }
 
 // Fonction pour obtenir le texte de la période
@@ -852,12 +1149,63 @@ document.addEventListener('DOMContentLoaded', function() {
         if (localStorage.getItem('themePreference') === 'system') {
             applyTheme(e.matches);
             localStorage.setItem('theme', e.matches ? 'dark' : 'light');
+        } else {
+            // En mode manuel, on peut décider de revenir au mode automatique si la préférence système change
+            // Cela permet de résoudre le cas où l'utilisateur est en mode manuel mais avec un thème opposé au système
+            // et que la préférence système change, ce qui devrait déclencher un retour au mode automatique
+
+            // Vérifier si le thème actuel est opposé à la nouvelle préférence système
+            const isCurrentlyDark = document.documentElement.classList.contains('dark');
+            if (isCurrentlyDark !== e.matches) {
+                // Le thème actuel est opposé à la nouvelle préférence système
+                // On peut demander à l'utilisateur s'il veut revenir au mode automatique
+                // Pour simplifier, on va automatiquement passer en mode système dans ce cas
+                localStorage.setItem('themePreference', 'system');
+
+                // Appliquer le nouveau thème système
+                applyTheme(e.matches);
+                localStorage.setItem('theme', e.matches ? 'dark' : 'light');
+
+                // Mettre à jour l'icône pour indiquer le mode automatique
+                updateThemeIcon(e.matches, true);
+            }
         }
     });
 
+    // Fonction pour basculer entre le mode manuel et automatique
+    function toggleThemeSystem() {
+        const currentPreference = localStorage.getItem('themePreference');
+
+        if (currentPreference === 'manual') {
+            // Passer en mode automatique (système)
+            localStorage.setItem('themePreference', 'system');
+
+            // Appliquer immédiatement le thème système
+            const isDark = prefersDarkScheme.matches;
+            applyTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            // Mettre à jour l'icône pour indiquer le mode automatique
+            updateThemeIcon(isDark, true);
+        } else {
+            // Passer en mode manuel - basculer le thème actuel
+            const isCurrentlyDark = document.documentElement.classList.contains('dark');
+            const newIsDark = !isCurrentlyDark;
+
+            applyTheme(newIsDark);
+
+            // Sauvegarder le choix de l'utilisateur
+            localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+            localStorage.setItem('themePreference', 'manual');
+
+            // Mettre à jour l'icône pour indiquer le mode manuel
+            updateThemeIcon(newIsDark, false);
+        }
+    }
+
     // Gestion du clic sur le bouton de thème
     if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('click', toggleThemeSystem);
     }
 });
 
@@ -1480,10 +1828,10 @@ function nativeShare(mode = 'temporal') {
         }).format(amountValue);
 
         shareTitle = "Incroyable perspective sur les retraites en France!";
-        shareText = `😱 ${formattedAmount} représentent ${resultText} de retraites versées en France\n\nDécouvrez combien de temps représente un montant en retraites versées en France : ${window.location.href}`;
+        shareText = `😱 ${formattedAmount} représentent ${resultText} de retraites versées en France\n\nDécouvrez combien de temps représente un montant en retraites versées en France.`;
     } else {
         shareTitle = "Incroyable perspective sur les retraites en France!";
-        shareText = `😱 Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}\n\n${window.location.href}`;
+        shareText = `😱 Découvrez combien de temps représente ce montant en retraites versées en France : ${resultText}`;
     }
 
     // Vérifier si l'API Web Share est disponible
@@ -1526,5 +1874,76 @@ function fallbackShare(text) {
             document.body.removeChild(textArea);
             alert('Le texte a été copié dans le presse-papiers. Vous pouvez maintenant le coller dans l\'application de votre choix.');
         });
+    }
+}
+
+// Fonction pour générer le texte de partage en fonction du mode
+function getShareText(mode) {
+    let resultText = '';
+
+    if (mode === 'temporal') {
+        const resultElement = document.getElementById('result-text-temporal');
+        const comparisonElement = document.getElementById('comparison-result-text-temporal');
+
+        resultText = resultElement.textContent;
+
+        if (comparisonElement && comparisonElement.textContent) {
+            resultText += ' - ' + comparisonElement.textContent;
+        }
+    } else if (mode === 'financial') {
+        const resultElement = document.getElementById('result-text-financial');
+        const comparisonElement = document.getElementById('comparison-result-text-financial');
+
+        resultText = resultElement.textContent;
+
+        if (comparisonElement && comparisonElement.innerHTML) {
+            // Nettoyer le HTML pour n'avoir que le texte
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = comparisonElement.innerHTML;
+            resultText += ' - ' + tempDiv.textContent || tempDiv.innerText || '';
+        }
+    }
+
+    // Récupérer la valeur du montant
+    const amountValue = document.getElementById('amount').value;
+
+    return ` découvrez combien de temps représente ce montant en retraites versées en France : ${amountValue} € équivaut à ${resultText}. Calculez vous-même sur `;
+}
+
+// Fonction pour partager sur les réseaux sociaux
+function shareOnSocial(platform) {
+    const currentUrl = window.location.href;
+    const text = 'Découvrez combien de temps représente un montant en retraites versées en France avec cette calculatrice.';
+
+    let shareUrl = '';
+
+    switch(platform) {
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(text)}`;
+            break;
+        case 'twitter': // Twitter/X
+            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(text)}`;
+            break;
+        default:
+            // Pour d'autres plateformes, on peut étendre cette fonction
+            return;
+    }
+
+    // Ouvrir la fenêtre de partage
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+}
+
+// Fonction pour partager via email ou SMS
+function shareVia(method) {
+    const currentUrl = window.location.href;
+    const text = 'Découvrez combien de temps représente un montant en retraites versées en France avec cette calculatrice.';
+
+    if (method === 'email') {
+        const subject = encodeURIComponent('Calculatrice d\'équivalent retraites');
+        const body = encodeURIComponent(`${text}\n\nDécouvrez cette calculatrice ici : ${currentUrl}`);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    } else if (method === 'sms') {
+        const body = encodeURIComponent(`${text} ${currentUrl}`);
+        window.location.href = `sms:?body=${body}`;
     }
 }

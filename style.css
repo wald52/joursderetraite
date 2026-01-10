@@ -165,6 +165,7 @@ button:hover {
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
     justify-content: space-between; /* Assure une bonne répartition de l'espace */
     transition: background-color 0.3s, border-color 0.3s;
+    width: 100%; /* S'assurer que le conteneur prend toute la largeur */
 }
 
 #result-text {
@@ -172,6 +173,8 @@ button:hover {
     font-weight: bold;
     color: var(--text-color);
     word-break: break-word;
+    width: 100%; /* S'assurer que le texte prend toute la largeur disponible */
+    min-width: 0; /* Permet au texte de se réduire si nécessaire */
 }
 
 /* Style pour le bouton d'installation */
