@@ -1,16 +1,24 @@
 // Service worker pour l'application PWA
 
-const CACHE_NAME = 'joursderetraite-v3'; // Mise à jour du numéro de version
+const CACHE_NAME = 'joursderetraite-v58'; // Mise à jour du numéro de version
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
-  '/script.js',
+  '/js/main.js',
+  '/js/modules/calculator.js',
+  '/js/modules/examples.js',
+  '/js/modules/formatting.js',
+  '/js/modules/pwa.js',
+  '/js/modules/sharing.js',
+  '/js/modules/state.js',
+  '/js/modules/theme.js',
+  '/js/modules/ui.js',
   '/manifest.json',
-  '/icone_retraite.svg',
-  '/icon.svg',
   '/icon-192x192.png',
-  '/icon-512x512.png'
+  '/icon-512x512.png',
+  '/bateaucoisiere.png',
+  '/favicon.ico'
 ];
 
 // Installation du service worker
@@ -44,10 +52,10 @@ self.addEventListener('activate', event => {
         })
       );
     })
-    .then(() => {
-      console.log('Service Worker activé');
-      return self.clients.claim(); // Prend le contrôle immédiatement
-    })
+      .then(() => {
+        console.log('Service Worker activé');
+        return self.clients.claim(); // Prend le contrôle immédiatement
+      })
   );
 });
 

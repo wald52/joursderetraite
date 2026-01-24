@@ -1,6 +1,6 @@
 {
-  "name": "Calculatrice d'Équivalent Retraites",
-  "short_name": "Retraites Calc",
+  "name": "Jours de retraites",
+  "short_name": "Jours de retraites",
   "description": "Une calculatrice pour convertir des montants en équivalent temps de retraites versées en France",
   "start_url": "/",
   "scope": "/",
