@@ -96,6 +96,8 @@ body {
     /* Cause coupure ombre bouton */
     overflow-x: hidden;
     /* Garder l'overflow-x pour éviter le scroll horizontal */
+    overflow-y: auto;
+    /* Permet le scroll vertical sur tous les appareils */
 }
 
 .main-content {
@@ -116,6 +118,7 @@ body {
     padding: 0;
     position: relative;
     flex-shrink: 0;
+    margin-bottom: 0.3rem;
 }
 
 .boat-container {
@@ -131,6 +134,9 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding-bottom: 0.25rem;
+    overflow: hidden;
+    margin-left: -0.5rem;
+    margin-top: -1rem;
 }
 
 .header-boat {
@@ -148,7 +154,7 @@ body {
 
 
 .header-title {
-    font-size: 1.6rem;
+    font-size: 2.4rem;
     font-weight: 700;
     background: var(--gradient-gold);
     -webkit-background-clip: text;
@@ -157,20 +163,18 @@ body {
     letter-spacing: -0.02em;
     margin-bottom: 0;
     line-height: 1.1;
+    white-space: nowrap;
+    overflow: visible;
+    max-width: 100%;
+    display: inline-block;
 }
 
 .header-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem !important;
     color: var(--gray-400);
     font-weight: 400;
     line-height: 1.2;
-    display: none;
-}
-
-@media (min-height: 600px) {
-    .header-subtitle {
-        display: block;
-    }
+    display: block;
 }
 
 /* ============================================
@@ -803,6 +807,49 @@ body {
 /* ============================================
     15. RESPONSIVE
     ============================================ */
+/* Réglages pour petits écrans (mobiles) */
+@media (max-width: 1099px) {
+    .main-content {
+        padding: 0.5rem;
+    }
+
+    .header-title {
+        font-size: 2.4rem;
+        white-space: nowrap;
+        overflow: visible;
+        max-width: 100%;
+        display: inline-block;
+    }
+
+    .header-content {
+        gap: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .header-boat {
+        width: 80px;
+    }
+
+    .card {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .result-value {
+        font-size: 1.75rem;
+    }
+
+    .mode-toggle-btn {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.7rem;
+    }
+}
+
 @media (min-width: 768px) {
     .main-content {
         max-width: 480px;
@@ -812,6 +859,10 @@ body {
 
     .header-title {
         font-size: 1.5rem;
+        white-space: nowrap;
+        overflow: visible;
+        max-width: 100%;
+        display: inline-block;
     }
 
     .header-content {
@@ -834,11 +885,15 @@ body {
 
 @media (max-width: 380px) {
     .header-title {
-        font-size: 1.1rem;
+        font-size: 2.2rem;
+        white-space: nowrap;
+        overflow: visible;
+        max-width: 100%;
+        display: inline-block;
     }
 
     .header-subtitle {
-        font-size: 0.7rem;
+        font-size: 1.1rem !important;
     }
 
     .header-content {
@@ -859,17 +914,59 @@ body {
     }
 }
 
-/* ============================================
-    16. ACCESSIBILITÉ
-    ============================================ */
-@media (prefers-reduced-motion: reduce) {
+/* Amélioration de la cohérence entre les tailles d'écran */
+@media (min-width: 381px) and (max-width: 1099px) {
+    .header-title {
+        font-size: 2.4rem;
+        white-space: nowrap;
+        overflow: visible;
+        max-width: 100%;
+        display: inline-block;
+    }
 
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+    .header-boat {
+        width: 90px;
+    }
+
+    .result-value {
+        font-size: 1.6rem;
+    }
+
+    .card {
+        padding: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+
+/* ============================================
+    16.1 CORRECTIONS POUR ÉCRANS TACTILES
+    ============================================ */
+/* Correction pour les boutons et éléments interactifs sur écrans tactiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Pour les appareils tactiles (comme les téléphones) */
+    .btn {
+        min-height: 44px; /* Minimum 44px pour touch targets */
+        min-width: 44px;
+    }
+
+    .mode-toggle-btn {
+        min-height: 44px;
+        padding: 0.7rem 0.5rem;
+    }
+
+    .input-field {
+        min-height: 44px;
+    }
+
+    /* Augmentation de la taille des zones cliquables */
+    .accordion-header {
+        min-height: 48px;
+    }
+
+    .share-btn {
+        min-height: 40px;
+        min-width: 40px;
     }
 }
 
@@ -919,6 +1016,7 @@ select.input-field option {
     transform: translateY(-2px);
 }
 
+
 .result-section {
     position: relative;
 }
@@ -935,7 +1033,6 @@ select.input-field option {
 
 .example-btn {
     background-color: rgba(212, 175, 55, 0.05);
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23d4af3799' stroke-width='2.5' stroke-dasharray='6%2c 6' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
     border: none;
     color: var(--gold-400);
     padding: 0.625rem 1rem;
@@ -948,6 +1045,35 @@ select.input-field option {
     align-items: center;
     gap: 0.5rem;
     flex-shrink: 0;
+    margin-top: 0.3rem;
+    position: relative;
+    overflow: visible;
+}
+
+.example-btn {
+    position: relative;
+}
+
+.example-btn::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: var(--radius-md);
+    z-index: -1;
+    background: 
+        linear-gradient(90deg, #d4af37 50%, transparent 50%) 0 0 / 12px 2px repeat-x,
+        linear-gradient(0deg, #d4af37 50%, transparent 50%) 0 0 / 2px 12px repeat-y;
+    background-size: 12px 12px;
+    animation: dashMove 2s linear infinite;
+}
+
+@keyframes dashMove {
+    100% {
+        background-position: 12px 12px;
+    }
 }
 
 .example-btn:hover {
@@ -1109,14 +1235,6 @@ select.input-field option {
     border-top: none !important;
     padding-top: 0 !important;
     margin-top: 20px !important;
-}
-
-.header-title {
-    font-size: 2.7rem !important;
-}
-
-.header-subtitle {
-    font-size: 1.2rem !important;
 }
 
 .accordion {
