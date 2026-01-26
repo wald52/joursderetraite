@@ -321,8 +321,15 @@ export function calculateComparison() {
     if(hiddenComparisonDiv) hiddenComparisonDiv.textContent = simpleText;
 
     // Afficher les sections du mode financier
-    document.getElementById('result-section-financial').classList.remove('hidden');
-    document.getElementById('share-section-financial').classList.remove('hidden');
+    const financialResultSection = document.getElementById('result-section-financial');
+    const financialShareSection = document.getElementById('share-section-financial');
+
+    if (financialResultSection) {
+        financialResultSection.classList.remove('hidden');
+    }
+    if (financialShareSection) {
+        financialShareSection.classList.remove('hidden');
+    }
 
     // Masquer les sections du mode temporel
     document.getElementById('result-section-temporal').classList.add('hidden');

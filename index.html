@@ -103,6 +103,9 @@
                 <!-- Bouton exemple -->
                 <div class="example-section">
                     <button class="example-btn" onclick="setRandomExample()">
+                        <svg class="example-btn-border" preserveAspectRatio="none">
+                            <rect class="example-btn-rect" x="2" y="2" rx="12" ry="12" pathLength="100" />
+                        </svg>
                         <i class="fas fa-lightbulb"></i>
                         <span>Charger un exemple</span>
                     </button>
@@ -133,7 +136,7 @@
 
                     </div>
 
-                    <div class="share-section">
+                    <div id="share-section-temporal" class="share-section">
                         <div class="share-buttons">
                             <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
                                 <i class="fab fa-facebook-f"></i>
@@ -215,22 +218,25 @@
                         <i class="fas fa-euro-sign input-icon"></i>
                     </div>
 
-                    <div class="card-label">📅 Période de retraite</div>
-                    <div class="input-wrapper">
-                        <select id="time-period" class="input-field">
-                            <option value="1">1 an</option>
-                            <option value="0.5">6 mois</option>
-                            <option value="0.25">3 mois</option>
-                            <option value="0.1">1 mois</option>
-                            <option value="0.033">10 jours</option>
-                            <option value="0.01">1 jour</option>
-                            <option value="custom">Personnalisé...</option>
-                        </select>
-                    </div>
+                    <!-- Champ Période de retraite (Masqué par défaut mais fonctionnel = 1 an) -->
+                    <div id="retirement-period-container" style="display: none;">
+                        <div class="card-label">📅 Période de retraite</div>
+                        <div class="input-wrapper">
+                            <select id="time-period" class="input-field">
+                                <option value="1">1 an</option>
+                                <option value="0.5">6 mois</option>
+                                <option value="0.25">3 mois</option>
+                                <option value="0.1">1 mois</option>
+                                <option value="0.033">10 jours</option>
+                                <option value="0.01">1 jour</option>
+                                <option value="custom">Personnalisé...</option>
+                            </select>
+                        </div>
 
-                    <div id="custom-period-container" class="hidden">
-                        <input type="text" inputmode="numeric" id="custom-period" placeholder="Durée en années"
-                            class="input-field" value="1">
+                        <div id="custom-period-container" class="hidden">
+                            <input type="text" inputmode="numeric" id="custom-period" placeholder="Durée en années"
+                                class="input-field" value="1">
+                        </div>
                     </div>
                 </div>
 
@@ -247,11 +253,12 @@
                         <button class="copy-btn" onclick="copyResult('financial')">
                             <i class="fas fa-copy"></i>
                         </button>
+                        <div class="result-label">📊 Équivalent financier</div>
                         <div id="result-text-financial" class="result-value"></div>
                         <div id="comparison-result-text-financial" class="hidden"></div>
                     </div>
 
-                    <div class="share-section">
+                    <div id="share-section-financial" class="share-section">
                         <div class="share-buttons">
                             <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
                                 <i class="fab fa-facebook-f"></i>
@@ -411,13 +418,7 @@
         </button>
     </div>
 
-    <!-- Installation PWA (bouton flottant subtil) -->
-    <div id="install-fab" class="hidden" style="position: fixed; bottom: 5rem; right: 1rem; z-index: 999;">
-        <button onclick="promptInstall()"
-            style="width: 3rem; height: 3rem; border-radius: 50%; background: linear-gradient(135deg, #d4af37, #e6c55a); border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4); display: flex; align-items: center; justify-content: center;">
-            <i class="fas fa-download" style="color: #0a192f; font-size: 1rem;"></i>
-        </button>
-    </div>
+
 </body>
 
 </html>

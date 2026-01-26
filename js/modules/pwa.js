@@ -54,14 +54,10 @@ export function promptInstall() {
             console.log("Choix de l'utilisateur:", choiceResult.outcome);
 
             const installBtn = document.getElementById('install-btn');
-            const installFab = document.getElementById('install-fab');
             const snackbar = document.getElementById('pwa-snackbar');
 
             if (installBtn) {
                 installBtn.style.display = 'none';
-            }
-            if (installFab) {
-                installFab.classList.add('hidden');
             }
             if (snackbar) {
                 snackbar.classList.remove('show');
@@ -104,18 +100,12 @@ export function showPWASnackbar() {
     }
 
     const snackbar = document.getElementById('pwa-snackbar');
-    const installFab = document.getElementById('install-fab');
 
     if (snackbar) {
         snackbar.classList.remove('hidden');
         setTimeout(() => {
             snackbar.classList.add('show');
         }, 100);
-    }
-
-    // Sinon, afficher le bouton FAB discrètement
-    if (installFab) {
-        installFab.classList.remove('hidden');
     }
 }
 

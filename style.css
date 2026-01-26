@@ -104,7 +104,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 0.1rem;
+    padding: 0.8rem 0.1rem 0.1rem 0.1rem;
+    /* Reduced top padding */
 }
 
 .main-content::-webkit-scrollbar {
@@ -136,7 +137,8 @@ body {
     padding-bottom: 0.25rem;
     overflow: hidden;
     margin-left: -0.5rem;
-    margin-top: -1rem;
+    margin-top: 0;
+    /* Removed negative margin -1rem */
 }
 
 .header-boat {
@@ -349,6 +351,7 @@ body {
     flex-direction: column;
     gap: 0;
     width: 100%;
+    margin-top: 0.25rem;
     background: rgba(10, 25, 47, 0.3);
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -359,7 +362,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem 0.75rem;
     /* Reduced from 0.875rem 1rem */
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -389,9 +392,9 @@ body {
 .result-row.highlight {
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.15rem;
     /* Reduced from 0.5rem */
-    padding: 0.75rem 0.75rem;
+    padding: 0.5rem 0.75rem;
     /* Reduced from 1.25rem 1rem */
 }
 
@@ -682,6 +685,8 @@ body {
     z-index: 1000;
     opacity: 0;
     transition: all var(--transition-base);
+    width: 90%;
+    max-width: 400px;
 }
 
 .snackbar.show {
@@ -810,7 +815,7 @@ body {
 /* Réglages pour petits écrans (mobiles) */
 @media (max-width: 1099px) {
     .main-content {
-        padding: 0.5rem;
+        padding: 0.4rem 0.5rem 0.5rem 0.5rem;
     }
 
     .header-title {
@@ -852,9 +857,10 @@ body {
 
 @media (min-width: 768px) {
     .main-content {
-        max-width: 480px;
+        max-width: 30rem;
+        /* Changed from 480px to rem to allow font-size scaling */
         margin: 0 auto;
-        padding: 0.1rem;
+        padding: 0.4rem 0.1rem 0.1rem 0.1rem;
     }
 
     .header-title {
@@ -885,7 +891,8 @@ body {
 
 @media (max-width: 380px) {
     .header-title {
-        font-size: 2.2rem;
+        font-size: 1.7rem;
+        /* Reduced from 2.2rem for Fold5 */
         white-space: nowrap;
         overflow: visible;
         max-width: 100%;
@@ -897,11 +904,13 @@ body {
     }
 
     .header-content {
-        flex-direction: column;
+        /* flex-direction: column; Retiré pour garder l'alignement horizontal */
+        gap: 0.25rem;
     }
 
     .header-boat {
-        width: 70px;
+        width: 3.5rem;
+        /* ~56px */
     }
 
     .result-value {
@@ -914,8 +923,24 @@ body {
     }
 }
 
-/* Amélioration de la cohérence entre les tailles d'écran */
-@media (min-width: 381px) and (max-width: 1099px) {
+@media (min-width: 381px) and (max-width: 450px) {
+    .header-title {
+        font-size: 1.9rem;
+        /* Reduced for iPhone 12 Pro */
+        white-space: nowrap;
+        overflow: visible;
+        max-width: 100%;
+        display: inline-block;
+    }
+
+    .header-boat {
+        width: 4rem;
+        /* ~64px */
+    }
+}
+
+/* Amélioration de la cohérence pour tous les écrans > 450px */
+@media (min-width: 451px) {
     .header-title {
         font-size: 2.4rem;
         white-space: nowrap;
@@ -925,7 +950,8 @@ body {
     }
 
     .header-boat {
-        width: 90px;
+        width: 5rem;
+        /* ~80px */
     }
 
     .result-value {
@@ -944,9 +970,11 @@ body {
     ============================================ */
 /* Correction pour les boutons et éléments interactifs sur écrans tactiles */
 @media (hover: none) and (pointer: coarse) {
+
     /* Pour les appareils tactiles (comme les téléphones) */
     .btn {
-        min-height: 44px; /* Minimum 44px pour touch targets */
+        min-height: 44px;
+        /* Minimum 44px pour touch targets */
         min-width: 44px;
     }
 
@@ -973,6 +1001,25 @@ body {
 :focus-visible {
     outline: 2px solid var(--gold-500);
     outline-offset: 2px;
+}
+
+/* ============================================
+    16.2 TABLETTE PORTRAIT SCALING
+    ============================================ */
+/* Augmente la taille de base pour les tablettes en mode portrait */
+@media (min-width: 768px) and (orientation: portrait) {
+    html {
+        font-size: 2.5vw;
+        /* Échelle fluide : 768px -> ~19px, 853px -> ~21px */
+    }
+
+    /* Limite supérieure pour éviter que ça devienne grotesque sur très grands écrans portrait */
+    @media (min-width: 1024px) {
+        html {
+            font-size: 25.6px;
+            /* Plafond */
+        }
+    }
 }
 
 /* ============================================
@@ -1050,30 +1097,45 @@ select.input-field option {
     overflow: visible;
 }
 
+/* Animation de bordure en pointillés style "voitures de course" */
 .example-btn {
     position: relative;
 }
 
-.example-btn::before {
-    content: '';
+.example-btn-border {
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: var(--radius-md);
-    z-index: -1;
-    background: 
-        linear-gradient(90deg, #d4af37 50%, transparent 50%) 0 0 / 12px 2px repeat-x,
-        linear-gradient(0deg, #d4af37 50%, transparent 50%) 0 0 / 2px 12px repeat-y;
-    background-size: 12px 12px;
-    animation: dashMove 2s linear infinite;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
 }
 
-@keyframes dashMove {
-    100% {
-        background-position: 12px 12px;
+.example-btn-rect {
+    fill: none;
+    stroke: var(--gold-500);
+    stroke-width: 2;
+    stroke-dasharray: 2.5 2.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    animation: dashRace 0.6s linear infinite;
+}
+
+@keyframes dashRace {
+    to {
+        stroke-dashoffset: -5;
+        /* Décalage d'un motif complet (2.5 + 2.5 = 5) basé sur pathLength=100 */
     }
+}
+
+.example-btn i,
+.example-btn span {
+    position: relative;
+    z-index: 1;
 }
 
 .example-btn:hover {
@@ -1208,6 +1270,24 @@ select.input-field option {
     top: -8px;
 }
 
+/* Alignement bouton Comparer (Mode Financier) */
+#financial-inputs .card {
+    margin-bottom: 0.5rem;
+    /* Augmenter l'espace sous la carte (était 0.2rem) */
+}
+
+#financial-inputs .btn-group {
+    top: 0;
+    /* Réinitialiser le décalage négatif */
+    margin-bottom: 0.5rem;
+    /* Assurer un espace égal en dessous */
+}
+
+#financial-inputs .result-section {
+    margin-top: 0;
+    /* Réinitialiser le décalage négatif */
+}
+
 .btn-group {
     position: relative;
     top: -10px;
@@ -1243,5 +1323,5 @@ select.input-field option {
 }
 
 .copy-btn {
-    top: 0.25rem !important;
+    top: 0.4rem !important;
 }
