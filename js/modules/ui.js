@@ -259,20 +259,22 @@ export function setRandomExample() {
                 const marqueeContent = currentExampleElement.querySelector('.marquee-content');
                 if (!marqueeContent) return;
 
-                const clientWidth = currentExampleElement.clientWidth;
+                const currentExampleStyle = window.getComputedStyle(currentExampleElement);
+                const paddingLeft = parseFloat(currentExampleStyle.paddingLeft);
+                const paddingRight = parseFloat(currentExampleStyle.paddingRight);
+                const availableWidth = currentExampleElement.clientWidth - paddingLeft - paddingRight;
                 const scrollWidth = marqueeContent.scrollWidth;
 
-
-
-                if (scrollWidth > clientWidth + 2) {
+                if (scrollWidth > availableWidth) {
                     currentExampleElement.classList.add('scrolling');
-
-                    // Calculer la distance de défilement (débordement + marge de sécurité)
-                    const scrollDistance = -(scrollWidth - clientWidth + 30);
+                    
+                    // Calculer la distance de défilement nécessaire (réduire l'espace vide à la fin)
+                    const scrollDistance = -(scrollWidth - availableWidth + 10); // Réduit à 10px d'espace vide
                     currentExampleElement.style.setProperty('--scroll-distance', `${scrollDistance}px`);
-
-                    // Durée de l'animation
-                    marqueeContent.style.animationDuration = '4s';
+                    
+                    // Durée de l'animation : beaucoup plus rapide
+                    const baseDuration = Math.max(1, (scrollWidth - availableWidth) / 200); // Beaucoup plus rapide : minimum 1s, puis 1s pour 200px
+                    marqueeContent.style.animationDuration = `${baseDuration}s`;
                 }
             });
         });

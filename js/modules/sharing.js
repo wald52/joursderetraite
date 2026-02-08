@@ -122,16 +122,24 @@ function getShareMessage(mode) {
 
     let message;
     if (mode === 'temporal') {
-        const amountInput = document.getElementById('amount');
-        const amountValue = amountInput ? parseFloat(amountInput.value.replace(/\u00A0/g, '').replace(/,/g, '.')) : 0;
+        let description;
+        
+        // Si c'est un exemple, on utilise le label de l'exemple
+        if (state.currentExampleLabel) {
+            description = state.currentExampleLabel;
+        } else {
+            // Sinon c'est un montant personnalisé, on utilise le montant formaté
+            const amountInput = document.getElementById('amount');
+            const amountValue = amountInput ? parseFloat(amountInput.value.replace(/\u00A0/g, '').replace(/,/g, '.')) : 0;
 
-        const formattedAmount = new Intl.NumberFormat('fr-FR', {
-            style: 'currency',
-            currency: 'EUR',
-            maximumFractionDigits: 0
-        }).format(amountValue);
+            description = new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            }).format(amountValue);
+        }
 
-        message = `Une perspective surprenante : ${formattedAmount} représentent ${resultText} de retraites versées en France. 🧐`;
+        message = `Une perspective surprenante : ${description} représentent ${resultText} de retraites versées en France. 🧐`;
     } else {
         // En mode financier, storedFinancialResult contient déjà une phrase de comparaison
         // On la nettoie un peu si besoin pour le partage
@@ -165,7 +173,7 @@ export function shareOnSocial(platform) {
     };
 
     if (directPlatforms[platform]) {
-        window.open(directPlatforms[platform], '_blank', 'width=600,height=400');
+        window.open(directPlatforms[platform], '_blank');
         return;
     }
 
