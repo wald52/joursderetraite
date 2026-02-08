@@ -272,8 +272,8 @@ export function setRandomExample() {
                     const scrollDistance = -(scrollWidth - availableWidth + 10); // Réduit à 10px d'espace vide
                     currentExampleElement.style.setProperty('--scroll-distance', `${scrollDistance}px`);
 
-                    // Durée de l'animation : beaucoup plus rapide
-                    const baseDuration = Math.max(2, (scrollWidth - availableWidth) / 60); // Plus lent : minimum 2s, puis ~60px/s
+                    // Durée de l'animation ajustée pour le ping-pong avec 30% de pause (mouvement sur 40% du temps)
+                    const baseDuration = Math.max(4, (scrollWidth - availableWidth) / 25);
                     marqueeContent.style.animationDuration = `${baseDuration}s`;
                 }
             });
