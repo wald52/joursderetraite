@@ -1,6 +1,6 @@
 // Service worker pour l'application PWA
 
-const CACHE_NAME = 'joursderetraite-v68'; // Mise à jour du numéro de version
+const CACHE_NAME = 'joursderetraite-v69'; // Mise à jour du numéro de version
 const urlsToCache = [
   './',
   'index.html',
@@ -86,22 +86,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Stale-while-revalidate pour les assets
+  // Network-first with cache fallback pour tous les assets
+  // Priorité au réseau pour avoir la dernière version, fallback sur le cache si hors ligne
   event.respondWith(
-    caches.match(request).then(cached => {
-      const fetchPromise = fetch(request)
-        .then(response => {
-          if (response && response.ok && request.url.startsWith(self.location.origin)) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
-        .catch(() => cached);
-
-      return cached || fetchPromise;
-    })
+    fetch(request)
+      .then(response => {
+        // Si la réponse est valide, on la met en cache pour le hors-ligne
+        if (response && response.ok && request.url.startsWith(self.location.origin)) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Si le réseau échoue, on essaie de servir depuis le cache
+        return caches.match(request);
+      })
   );
 });
