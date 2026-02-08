@@ -68,7 +68,7 @@ export function copyResult(mode = 'temporal') {
     navigator.clipboard.writeText(resultText).then(function () {
         if (copyBtn) {
             const originalIcon = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
             setTimeout(function () {
                 copyBtn.innerHTML = originalIcon;
             }, 2000);
@@ -131,9 +131,12 @@ function getShareMessage(mode) {
             maximumFractionDigits: 0
         }).format(amountValue);
 
-        message = `😱 Incroyable perspective ! ${formattedAmount} représentent ${resultText} de retraites versées en France`;
+        message = `Une perspective surprenante : ${formattedAmount} représentent ${resultText} de retraites versées en France. 🧐`;
     } else {
-        message = `😱 Incroyable perspective ! ${resultText}`;
+        // En mode financier, storedFinancialResult contient déjà une phrase de comparaison
+        // On la nettoie un peu si besoin pour le partage
+        let comparisonShort = resultText.replace('😱 Incroyable perspective ! ', '');
+        message = `Le saviez-vous ? ${comparisonShort} 🧐`;
     }
 
     return message;
@@ -141,7 +144,7 @@ function getShareMessage(mode) {
 
 /**
  * Partage sur les réseaux sociaux
- * @param {string} platform - 'facebook' ou 'twitter'
+ * @param {string} platform - La plateforme cible
  */
 export function shareOnSocial(platform) {
     const message = getShareMessage(state.currentActiveMode);
@@ -151,38 +154,49 @@ export function shareOnSocial(platform) {
     }
 
     const currentUrl = window.location.href;
+    const fullMessage = `${message} ${currentUrl}`;
 
-    let shareUrl = '';
+    // Liste des plateformes avec partage direct par URL
+    const directPlatforms = {
+        'facebook': `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(message)}`,
+        'twitter': `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(currentUrl)}`,
+        'linkedin': `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`,
+        'nostr': `https://nostr.at/compose?text=${encodeURIComponent(fullMessage)}`
+    };
 
-    switch (platform) {
-        case 'facebook':
-            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(message)}`;
-            break;
-        case 'twitter':
-            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(message)}`;
-            break;
-        case 'linkedin':
-            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
-            break;
-        case 'nostr':
-            shareUrl = `https://nostr.at/compose?text=${encodeURIComponent(message + ' ' + currentUrl)}`;
-            break;
-        case 'instagram':
-            // Instagram n'a pas d'URL de partage web directe, on redirige vers l'app ou le profil
-            shareUrl = `https://www.instagram.com/`;
-            break;
-        case 'tiktok':
-            // TikTok n'a pas d'URL de partage web directe simple
-            shareUrl = `https://www.tiktok.com/`;
-            break;
-        case 'discord':
-            shareUrl = `https://discord.com/channels/@me`;
-            break;
-        default:
-            return;
+    if (directPlatforms[platform]) {
+        window.open(directPlatforms[platform], '_blank', 'width=600,height=400');
+        return;
     }
 
-    window.open(shareUrl, '_blank', 'width=600,height=400');
+    // Plateformes "récalcitrantes" (pas d'URL de partage de texte brut simple)
+    // On essaie l'API native si disponible sur mobile
+    if (navigator.share && !isDesktop()) {
+        navigator.share({
+            title: "Perspective Retraites",
+            text: message,
+            url: currentUrl
+        }).catch(err => {
+            console.warn("Erreur partage natif:", err);
+            copyToClipboardFallback(fullMessage);
+        });
+    } else {
+        // Fallback sur Desktop : Copie dans le presse-papiers
+        copyToClipboardFallback(fullMessage);
+    }
+}
+
+/**
+ * Helper pour copier dans le presse-papiers avec alerte
+ * @param {string} text - Texte à copier
+ */
+function copyToClipboardFallback(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Propulsé par Jours de Retraite !\n\nLe texte de partage a été copié dans votre presse-papiers. Vous pouvez maintenant le coller dans votre application.");
+    }).catch(err => {
+        console.error("Erreur copie clipboard:", err);
+        alert("Impossible de copier automatiquement. Veuillez copier le résultat manuellement.");
+    });
 }
 
 /**
@@ -209,6 +223,21 @@ export function shareVia(method) {
 }
 
 /**
+ * Détecte la capacité SMS et cache le bouton si non disponible
+ */
+export function checkSMSCapability() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+        const smsButtons = document.querySelectorAll('button[onclick*="shareVia(\'sms\')"]');
+        smsButtons.forEach(btn => {
+            btn.style.display = 'none';
+        });
+
+    }
+}
+
+/**
  * Partage natif de l'appareil
  * @param {string} mode - 'temporal' ou 'financial'
  */
@@ -229,7 +258,7 @@ export function nativeShare(mode = 'temporal') {
             text: shareText,
             url: window.location.href
         }).catch(error => {
-            console.log('Erreur de partage natif:', error);
+
             if (error.name !== 'AbortError') {
                 fallbackShare(shareText);
             }

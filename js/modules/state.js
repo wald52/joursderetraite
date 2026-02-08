@@ -4,22 +4,18 @@
  */
 
 export const state = {
-    // Variables pour suivre si un calcul a déjà été effectué
-    hasCalculatedTemporal: false,
-    hasCalculatedFinancial: false,
-
     // Variables pour stocker les résultats
     storedTemporalResult: '',
     storedFinancialResult: '',
-    storedFinancialComparisonResult: '',
+    currentExampleLabel: '', // Stocke le label de l'exemple actif (temporel)
 
     // Variable pour suivre si on est en train de calculer
     isCalculating: false,
 
     // Variable pour suivre le mode actif
-    currentActiveMode: 'temporal', // 'temporal' ou 'financial'
+    currentActiveMode: null, // 'temporal' ou 'financial'
 
-    // Variable pour stocker l'événement d'installation différée
+    // Variable pour suivre l'événement d'installation différée
     deferredPrompt: null,
 
     // Compteur de calculs pour l'invitation PWA

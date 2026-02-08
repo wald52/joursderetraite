@@ -45,8 +45,8 @@
 
     /* Transitions */
     --transition-fast: 150ms ease;
-    --transition-base: 250ms ease;
-    --transition-slow: 400ms ease;
+    --transition-base: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    --transition-slow: 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
     /* Border radius */
     --radius-sm: 8px;
@@ -59,7 +59,6 @@
 /* ============================================
     2. POLICES & BASE
     ============================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 *,
 *::before,
@@ -76,7 +75,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--gradient-navy);
     color: var(--white);
     min-height: 100vh;
@@ -92,6 +91,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     max-width: 100vw;
+    position: relative;
     /* overflow: hidden; */
     /* Cause coupure ombre bouton */
     overflow-x: hidden;
@@ -104,8 +104,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 0.8rem 0.1rem 0.1rem 0.1rem;
-    /* Reduced top padding */
+    padding: 0.4rem 0.1rem 0.1rem 0.1rem;
+    /* Significantement réduit pour compacter le haut */
 }
 
 .main-content::-webkit-scrollbar {
@@ -119,15 +119,7 @@ body {
     padding: 0;
     position: relative;
     flex-shrink: 0;
-    margin-bottom: 0.3rem;
-}
-
-.boat-container {
-    position: relative;
-    width: 100%;
-    height: 40px;
-    margin-bottom: 0;
-    overflow: hidden;
+    margin-bottom: 0.2rem;
 }
 
 .header-content {
@@ -135,10 +127,17 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding-bottom: 0.25rem;
-    overflow: hidden;
+    overflow: visible;
     margin-left: -0.5rem;
     margin-top: 0;
     /* Removed negative margin -1rem */
+}
+
+.header-boat-wrap {
+    position: relative;
+    display: inline-block;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .header-boat {
@@ -169,7 +168,128 @@ body {
     overflow: visible;
     max-width: 100%;
     display: inline-block;
+    position: relative;
 }
+
+@keyframes sparklePass {
+    0% {
+        opacity: 0;
+        transform: translateX(-120%) skewX(-15deg);
+    }
+
+    20% {
+        opacity: 0.4;
+    }
+
+    80% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(120%) skewX(-15deg);
+    }
+}
+
+.sparkle-pass .app-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(212, 175, 55, 0.05) 30%,
+            rgba(255, 255, 255, 0.15) 50%,
+            rgba(212, 175, 55, 0.05) 70%,
+            transparent 100%);
+    pointer-events: none;
+    mix-blend-mode: color-dodge;
+    opacity: 0;
+    z-index: 2;
+    transform: translateX(-100%) skewX(-15deg);
+    animation: sparklePass 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes titleReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.92);
+        filter: blur(12px);
+        letter-spacing: 0.1em;
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        letter-spacing: -0.02em;
+    }
+}
+
+.title-reveal {
+    opacity: 0;
+    animation: titleReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cardSheen {
+    0% {
+        opacity: 0;
+        transform: translateX(-120%);
+    }
+
+    30% {
+        opacity: 0.35;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(120%);
+    }
+}
+
+.card-entrance {
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+    animation: cardFadeIn 0.5s ease-out forwards;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.card-entrance::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.08) 35%,
+            rgba(255, 255, 255, 0.28) 50%,
+            rgba(255, 255, 255, 0.08) 65%,
+            transparent 100%);
+    transform: translateX(-120%);
+    opacity: 0;
+    animation: cardSheen 1s ease-out forwards;
+    animation-delay: inherit;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
 
 .header-subtitle {
     font-size: 1.1rem !important;
@@ -184,15 +304,18 @@ body {
     ============================================ */
 .card {
     background: var(--gradient-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-lg);
-    padding: 0.5rem !important;
+    padding: 0.4rem !important;
+    /* Réduit pour compacter */
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 0.2rem;
+    gap: 0.4rem;
+    margin-bottom: 0.1rem;
+    will-change: transform, opacity;
+    transform: translateZ(0);
 }
 
 .card> :last-child {
@@ -240,7 +363,7 @@ body {
     font-size: 1rem;
     /* Reduced from 1rem */
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     color: var(--white);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
@@ -273,7 +396,7 @@ body {
         var(--gradient-gold) border-box;
     border: 3px solid transparent;
     border-radius: var(--radius-lg);
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -283,17 +406,18 @@ body {
 /* Trait supérieur supprimé au profit d'une bordure complète */
 
 .result-label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     color: var(--gold-400);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
 }
 
 .result-value {
     /* Styles de base pour le conteneur du résultat */
     color: var(--gold-400);
+    width: 100%;
 }
 
 /* NOUVEAUX STYLES POUR L'AFFICHAGE STRUCTURÉ */
@@ -302,10 +426,12 @@ body {
 .result-grid-temporal {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
     justify-content: center;
+    align-items: center;
+    /* Aligne la phrase de fin avec les cases */
     width: 100%;
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
 }
 
 .result-box {
@@ -329,7 +455,7 @@ body {
 }
 
 .result-box .value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--gold-400);
@@ -345,94 +471,30 @@ body {
     font-weight: 600;
 }
 
-/* Liste Financière (Mode Financier) */
-.result-list-financial {
+/* Grille Financière (Mode Financier) */
+.result-grid-financial {
     display: flex;
-    flex-direction: column;
-    gap: 0;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    margin-top: 0.25rem;
-    background: rgba(10, 25, 47, 0.3);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 0.15rem;
 }
 
-.result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.4rem 0.75rem;
-    /* Reduced from 0.875rem 1rem */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.result-row:last-child {
-    border-bottom: none;
+.result-box.highlight {
     background: rgba(212, 175, 55, 0.1);
-    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
 }
 
-.result-row .label {
-    font-size: 0.75rem;
-    /* Reduced from 0.85rem */
-    color: var(--gray-400);
-    font-weight: 500;
-}
-
-.result-row .value {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    color: var(--white);
-    font-size: 0.9rem;
-    /* Reduced from 1rem */
-    text-align: right;
-}
-
-.result-row.highlight {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-    /* Reduced from 0.5rem */
-    padding: 0.5rem 0.75rem;
-    /* Reduced from 1.25rem 1rem */
-}
-
-.result-row.highlight .label {
-    font-size: 0.65rem;
-    /* Reduced from 0.8rem */
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+.result-box.highlight .value {
     color: var(--gold-400);
-}
-
-.result-row.highlight .value {
-    font-size: 1.5rem;
-    /* Reduced from 2rem */
-    color: var(--gold-400);
-    font-weight: 800;
-    text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 /* Fin Nouveaux Styles */
-
-.result-unit {
-    font-size: 0.75rem;
-    /* Reduced from 0.85rem */
-    font-weight: 500;
-    color: var(--gray-300);
-    margin-top: 0.5rem;
-    /* Reduced from 1rem */
-    padding-top: 0.25rem;
-    /* Reduced from 0.5rem */
-    width: 100%;
-}
-
-/* Compteur slot machine */
-.counter-container {
-    display: inline-flex;
-    gap: 0.125rem;
-}
 
 .counter-digit {
     display: inline-flex;
@@ -482,9 +544,34 @@ body {
 }
 
 .btn-primary {
-    background: var(--gradient-gold);
+    background: var(--gold-500);
     color: var(--navy-900);
-    box-shadow: var(--shadow-gold);
+    box-shadow: var(--shadow-gold), 0 0 20px rgba(212, 175, 55, 0.3);
+    border: 2px solid var(--gold-500);
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.btn-primary.one-shot-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary.one-shot-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.05) 35%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.05) 65%,
+            transparent 100%);
+    transform: translateX(-120%);
+    animation: shimmer 1.4s ease-out 0.2s forwards;
+    will-change: transform;
+    pointer-events: none;
 }
 
 .btn-primary:hover {
@@ -497,23 +584,23 @@ body {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--gradient-card);
     color: var(--gray-300);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
     color: var(--white);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     transform: translateY(-2px);
 }
 
 .btn-group {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    /* Reduced from 0.75rem */
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
 }
 
 .share-section {
@@ -533,9 +620,9 @@ body {
     display: flex;
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-full);
-    padding: 0.15rem;
-    margin-bottom: 0.5rem;
-    margin-top: -10px;
+    padding: 0.12rem;
+    margin-bottom: 0.3rem;
+    margin-top: -6px;
     position: relative;
     z-index: 10;
 }
@@ -543,7 +630,7 @@ body {
 .mode-toggle-btn {
     flex: 1;
     padding: 0.4rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--gray-400);
     background: transparent;
@@ -552,6 +639,14 @@ body {
     cursor: pointer;
     transition: all var(--transition-base);
     z-index: 1;
+}
+
+.mode-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transform: translateX(-5px);
+    margin-bottom: -3px;
 }
 
 .mode-toggle-btn.active {
@@ -569,10 +664,10 @@ body {
     ============================================ */
 .accordion {
     background: var(--gradient-card);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    margin-top: auto;
+    margin-top: 0.4rem;
     flex-shrink: 0;
     transition: all var(--transition-base);
 }
@@ -643,7 +738,7 @@ body {
 }
 
 .infography text {
-    font-family: 'Inter', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     fill: var(--gray-300);
 }
 
@@ -653,16 +748,10 @@ body {
 }
 
 .infography .value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     font-size: 12px;
     fill: var(--gold-400);
     font-weight: 600;
-}
-
-.infography .formula {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    fill: var(--gray-400);
 }
 
 /* ============================================
@@ -709,6 +798,7 @@ body {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-base);
+    flex-shrink: 0;
 }
 
 .snackbar-btn:hover {
@@ -723,6 +813,10 @@ body {
     cursor: pointer;
     padding: 0.25rem;
     font-size: 1rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ============================================
@@ -801,14 +895,6 @@ body {
     display: none !important;
 }
 
-.text-center {
-    text-align: center;
-}
-
-.mt-auto {
-    margin-top: auto;
-}
-
 /* ============================================
     15. RESPONSIVE
     ============================================ */
@@ -851,7 +937,7 @@ body {
 
     .mode-toggle-btn {
         padding: 0.5rem 0.25rem;
-        font-size: 0.7rem;
+        font-size: 0.95rem;
     }
 }
 
@@ -1055,7 +1141,7 @@ select.input-field option {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-base);
-    z-index: 10;
+    z-index: 1;
 }
 
 .copy-btn:hover {
@@ -1076,13 +1162,15 @@ select.input-field option {
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.75rem;
+    width: 100%;
+    min-width: 0;
 }
 
 .example-btn {
     background-color: rgba(212, 175, 55, 0.05);
     border: none;
     color: var(--gold-400);
-    padding: 0.625rem 1rem;
+    padding: 0.7rem 1rem;
     font-size: 0.8rem;
     font-weight: 600;
     border-radius: var(--radius-md);
@@ -1122,14 +1210,19 @@ select.input-field option {
     vector-effect: non-scaling-stroke;
     width: calc(100% - 4px);
     height: calc(100% - 4px);
-    animation: dashRace 0.6s linear infinite;
+    animation: dashRotate 3s linear infinite;
 }
 
-@keyframes dashRace {
+@keyframes dashRotate {
     to {
-        stroke-dashoffset: -5;
-        /* Décalage d'un motif complet (2.5 + 2.5 = 5) basé sur pathLength=100 */
+        stroke-dashoffset: -10;
     }
+}
+
+.example-btn:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
 }
 
 .example-btn i,
@@ -1138,9 +1231,38 @@ select.input-field option {
     z-index: 1;
 }
 
-.example-btn:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-    transform: translateY(-2px);
+.share-btn.native {
+    width: auto;
+    padding: 0 0.6rem;
+    background: var(--gradient-gold);
+    color: var(--navy-900);
+    border: none;
+    font-size: 0.75rem;
+    gap: 0.35rem;
+}
+
+.example-section {
+    position: relative;
+    top: -8px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4rem;
+    /* Réduit de 0.8rem pour décaler vers la gauche */
+}
+
+/* Alignement bouton Comparer (Mode Financier) */
+#financial-inputs .card {
+    margin-bottom: 0.5rem;
+    /* Augmenter l'espace sous la carte (était 0.2rem) */
+}
+
+#financial-inputs .btn-group {
+    top: 0;
+    /* Réinitialiser le décalage négatif */
+    margin-bottom: 0.5rem;
+    /* Assurer un espace égal en dessous */
 }
 
 .current-example {
@@ -1149,19 +1271,22 @@ select.input-field option {
     font-weight: 700;
     line-height: 1.4;
     background: rgba(212, 175, 55, 0.1);
-    padding: 0.6rem 0.8rem;
+    padding: 0.4rem 0.8rem;
     border-radius: var(--radius-md);
     border: 2px solid var(--gold-500);
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
-    flex: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    flex: 1;
+    min-width: 0;
+    margin-top: 2px;
+    /* Abaissé de 2px comme demandé */
 
     /* MODIFICATIONS POUR LE MARQUEE */
     overflow: hidden;
     white-space: nowrap;
     position: relative;
     display: block;
-    /* Changé de flex à block pour plus de fiabilité */
+    box-sizing: border-box;
 }
 
 .current-example .marquee-content {
@@ -1172,10 +1297,9 @@ select.input-field option {
 
 .current-example.scrolling .marquee-content {
     display: inline-block;
-    padding-left: 100%;
-    /* Déplace le début après la zone visible */
-    animation: marquee 15s linear infinite;
-    -webkit-animation: marquee 15s linear infinite;
+    /* Pas de padding-left, le texte commence immédiatement */
+    animation: marquee 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    -webkit-animation: marquee 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes marquee {
@@ -1183,8 +1307,16 @@ select.input-field option {
         transform: translateX(0);
     }
 
+    25% {
+        transform: translateX(0);
+    }
+
+    75% {
+        transform: translateX(var(--scroll-distance, -40%));
+    }
+
     100% {
-        transform: translateX(-100%);
+        transform: translateX(var(--scroll-distance, -40%));
     }
 }
 
@@ -1193,8 +1325,16 @@ select.input-field option {
         -webkit-transform: translateX(0);
     }
 
+    25% {
+        -webkit-transform: translateX(0);
+    }
+
+    75% {
+        -webkit-transform: translateX(var(--scroll-distance, -40%));
+    }
+
     100% {
-        -webkit-transform: translateX(-100%);
+        -webkit-transform: translateX(var(--scroll-distance, -40%));
     }
 }
 
@@ -1265,22 +1405,21 @@ select.input-field option {
     gap: 0.35rem;
 }
 
-.example-section {
-    position: relative;
-    top: -8px;
-}
+
 
 /* Alignement bouton Comparer (Mode Financier) */
 #financial-inputs .card {
-    margin-bottom: 0.5rem;
-    /* Augmenter l'espace sous la carte (était 0.2rem) */
+    margin-bottom: 0.3rem;
+    padding: 0.35rem !important;
+    gap: 0.35rem;
+    /* Réduit de 0.5rem à 0.3rem + padding et gap réduits */
 }
 
 #financial-inputs .btn-group {
-    top: 0;
-    /* Réinitialiser le décalage négatif */
-    margin-bottom: 0.5rem;
-    /* Assurer un espace égal en dessous */
+    top: -20px;
+    /* Remonter le bouton */
+    margin-bottom: -15px;
+    /* Réduit l'espace avec l'élément suivant (Méthodologie) */
 }
 
 #financial-inputs .result-section {
@@ -1295,6 +1434,25 @@ select.input-field option {
 
 .result-section {
     margin-top: -5px;
+    opacity: 0;
+    animation: fadeInSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.result-section:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .result-section::after {
@@ -1325,3 +1483,515 @@ select.input-field option {
 .copy-btn {
     top: 0.4rem !important;
 }
+
+/* Textes d'interprétation pour les résultats */
+.result-interpretation-header,
+.result-interpretation-footer {
+    text-align: center;
+    color: var(--gray-300);
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0.25rem 0;
+}
+
+.result-interpretation-header {
+    margin: 0.1rem 0 0.3rem 0;
+}
+
+.result-interpretation-footer {
+    margin: 0;
+    color: var(--gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    padding: 0.2rem 0 0.2rem 0.4rem;
+    /* Un peu d'espace à gauche si sur la même ligne */
+    line-height: 1.2;
+}
+
+/* Capitalisation de la première lettre pour les libellés narratifs */
+.dropdown-option::first-letter,
+.result-interpretation-footer::first-letter,
+.trigger-text::first-letter {
+    text-transform: uppercase;
+}
+
+/* ============================================
+    21. GESTION DES MODES (Premium Transitions)
+    ============================================ */
+
+/* Conteneur principal */
+.modes-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    /* Allow height to adapt if needed, but overlap is key */
+    width: 100%;
+    position: relative;
+}
+
+/* Les deux modes occupent la même cellule (superposition) */
+.mode-content {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    /* Transition de base pour toutes les propriétés animées */
+    transition:
+        opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Visibility changes at end by default */
+
+    /* Point de pivot pour le scaling */
+    transform-origin: center top;
+
+    /* État initial (caché par défaut pour éviter le FOUC, géré par l'état parent) */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.92) translateX(0);
+    pointer-events: none;
+}
+
+/* --- ÉTAT 1: TEMPOREL ACTIF --- */
+.modes-container[data-active-mode="temporal"] #temporal-inputs {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateX(0);
+    pointer-events: auto;
+    transition:
+        opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Instant visibility on start */
+    z-index: 10;
+}
+
+.modes-container[data-active-mode="temporal"] #financial-inputs {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95) translateX(60px);
+    /* Part vers la droite */
+    pointer-events: none;
+    z-index: 1;
+    /* Faster exit transition */
+    transition:
+        opacity 0.25s ease-out,
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- ÉTAT 2: FINANCIER ACTIF --- */
+.modes-container[data-active-mode="financial"] #financial-inputs {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateX(0);
+    pointer-events: auto;
+    transition:
+        opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10;
+}
+
+.modes-container[data-active-mode="financial"] #temporal-inputs {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95) translateX(-60px);
+    /* Part vers la gauche */
+    pointer-events: none;
+    z-index: 1;
+    /* Faster exit transition */
+    transition:
+        opacity 0.25s ease-out,
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Sections de résultat : flux normal en dessous de la grille */
+.modes-container>.result-section {
+    grid-column: 1;
+    grid-row: 2;
+    position: relative;
+    margin-top: 1rem;
+}
+
+/* Sections de résultat à l'intérieur du modes-container - ne pas participer à la grille */
+.modes-container>.result-section {
+    grid-column: 1;
+    grid-row: 2;
+    position: relative;
+}
+
+/* ============================================
+    22. DROPDOWNS PERSONNALISÉS
+    ============================================ */
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    z-index: 5;
+}
+
+.custom-dropdown.open {
+    z-index: 1001;
+}
+
+/* Fix stacking context: ensure the card containing an open dropdown is above subsequent elements */
+.card:has(.custom-dropdown.open) {
+    z-index: 9999 !important;
+    position: relative !important;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    color: var(--white);
+}
+
+.dropdown-trigger:hover {
+    border-color: var(--gold-400);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.trigger-text {
+    font-size: 0.9rem;
+    color: var(--gray-300);
+    font-weight: 600;
+}
+
+.trigger-icon {
+    transition: transform var(--transition-base);
+    color: var(--gray-400);
+}
+
+.custom-dropdown.open .trigger-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--navy-800);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    max-height: 300px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.dropdown-options::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+.dropdown-options::-webkit-scrollbar-button,
+.dropdown-options::-webkit-scrollbar-track,
+.dropdown-options::-webkit-scrollbar-track-piece,
+.dropdown-options::-webkit-scrollbar-thumb,
+.dropdown-options::-webkit-scrollbar-corner {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+    -webkit-appearance: none !important;
+}
+
+.custom-scrollbar {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    width: 10px;
+    height: calc(100% - 16px);
+    background: transparent;
+    border-radius: 5px;
+    pointer-events: auto;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.custom-scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    left: 2px;
+    width: 6px;
+    background: var(--gold-500);
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    transition: background 0.2s ease;
+    min-height: 40px;
+}
+
+.custom-scrollbar-thumb:hover {
+    background: var(--gold-400);
+}
+
+.custom-dropdown.open .dropdown-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+    color: var(--gray-300);
+    font-weight: 600;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.dropdown-option:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold-400);
+}
+
+.dropdown-option.selected {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--gold-400);
+}
+
+/* Select natif caché */
+.hidden-select {
+    display: none;
+}
+
+/* ============================================
+    23. CLASSES UTILITAIRES
+    ============================================ */
+
+/* Margin utilities */
+.mr-1 {
+    margin-right: 0.25rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-3 {
+    margin-top: 0.75rem;
+}
+
+/* Display utilities */
+.hidden {
+    display: none !important;
+}
+
+/* Container utility */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Text utilities */
+.italic {
+    font-style: italic;
+}
+
+/* Transform utility */
+/* ============================================
+    24. FOOTER STYLES
+    ============================================ */
+
+.app-footer {
+    margin-top: 0.25rem;
+    /* Reduced from 0.75rem */
+    padding: 0.5rem 0;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-link {
+    color: var(--gray-400);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: inline-block;
+    transition: all var(--transition-base);
+}
+
+.footer-link:hover {
+    color: var(--gold-400);
+    text-shadow: 0 4px 12px rgba(212, 175, 55, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+    25. ANIMATIONS PREMIUM AU CHARGEMENT
+    ============================================ */
+
+/* Animation de base : fade in sans slide */
+/* Animation de base : fade in sans slide (Premium Blur) */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        filter: blur(4px);
+    }
+
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes fadeInSimple {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+
+.app-footer .fade-in {
+    animation-name: fadeInSimple;
+}
+
+/* Animation de base : fade in avec slide up */
+/* Animation de base : fade in avec slide up (Premium Blur + Scale) */
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+        filter: blur(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Animation pour le bateau : arrive avec rotation depuis bas gauche */
+@keyframes boatSail {
+    0% {
+        opacity: 0;
+        transform: translateX(-36px) rotate(-18deg) scale(0.99);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes boatFloat {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-3px) rotate(0.6deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+/* Animation pulse doux pour attirer l'attention */
+@keyframes gentlePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* Classe de base pour les éléments animés */
+.fade-in-slide-up {
+    opacity: 0;
+    animation: fadeInSlideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform: translateZ(0);
+    /* Force GPU composite only if necessary */
+}
+
+/* Animation du bateau */
+.header-boat {
+    opacity: 0;
+    transform-origin: bottom left;
+    animation: boatSail 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform: translateZ(0);
+}
+
+
+
+/* Délais staggered pour l'effet premium */
+.reveal-1 {
+    animation-delay: 0.12s;
+}
+
+.reveal-2 {
+    animation-delay: 0.24s;
+}
+
+.reveal-3 {
+    animation-delay: 0.36s;
+}
+
+.reveal-4 {
+    animation-delay: 0.48s;
+}
+
+.reveal-5 {
+    animation-delay: 0.6s;
+}
+
+.reveal-6 {
+    animation-delay: 0.72s;
+}
+
+.reveal-7 {
+    animation-delay: 0.84s;
+}
+
+.reveal-8 {
+    animation-delay: 0.96s;
+}
+
+/* Classe pour cacher initialement le mode financier sans animation */

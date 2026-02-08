@@ -50,8 +50,8 @@ export function promptInstall() {
     if (state.deferredPrompt) {
         state.deferredPrompt.prompt();
 
-        state.deferredPrompt.userChoice.then((choiceResult) => {
-            console.log("Choix de l'utilisateur:", choiceResult.outcome);
+        state.deferredPrompt.userChoice.then(() => {
+
 
             const installBtn = document.getElementById('install-btn');
             const snackbar = document.getElementById('pwa-snackbar');
@@ -116,36 +116,38 @@ export function initPWA() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
             navigator.serviceWorker.register('sw.js')
-                .then(function (registration) {
-                    console.log('ServiceWorker enregistré avec succès:', registration.scope);
+                .then(function () {
+
 
                     window.addEventListener('beforeinstallprompt', (event) => {
-                        console.log('Événement beforeinstallprompt déclenché');
+
                         event.preventDefault();
                         state.deferredPrompt = event;
                     });
                 })
-                .catch(function (error) {
-                    console.log("Échec de l'enregistrement du ServiceWorker:", error);
+                .catch(function () {
+
                 });
         });
 
         // Gestion de l'état de connexion
         window.addEventListener('online', function () {
-            console.log('Connexion réseau rétablie');
+
             hideOfflineIndicator();
         });
 
         window.addEventListener('offline', function () {
-            console.log('Mode hors ligne activé');
+
             showOfflineIndicator();
         });
+
+        // Note: éviter de forcer un reload ici pour ne pas perturber Lighthouse/FCP
     }
 
     // Écouter l'événement de calcul terminé pour proposer l'installation
     window.addEventListener('calculationComplete', (event) => {
         const { count } = event.detail;
-        console.log(`Calcul #${count} effectué`);
+
 
         // Proposer l'installation après 2 calculs
         if (count >= 2) {

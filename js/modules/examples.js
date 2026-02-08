@@ -5,69 +5,99 @@
 
 // Tableau des exemples de valeurs célèbres
 export const examples = [
-    { value: 1500000000, label: "1,5Mds € - Budget annuel de l'UNESCO" },
-    { value: 40000000, label: "40M € - Salaire annuel de Kylian Mbappé" },
-    { value: 1000000000, label: "1Mds € - Dons à la Fondation Gates" },
-    { value: 150000000, label: "150M € - Prix d'une œuvre de Basquiat" },
-    { value: 500000000, label: "500M € - Valeur d'une entreprise moyenne du CAC 40" },
-    { value: 2500000000, label: "2,5Mds € - Prix d'une villa à Monaco" },
-    { value: 80000000, label: "80M € - Salaire annuel d'un PDG du CAC 40" },
-    { value: 3000000000, label: "3Mds € - Coût d'un avion présidentiel" },
-    { value: 60000000, label: "60M € - Prix d'un yacht de luxe" },
-    { value: 237000000, label: "237M € - Budget d'Avatar (2009)" },
-    { value: 59946338573, label: "59,9Mds € - Budget du ministère des Armées 2025" },
-    { value: 88642000013, label: "88,6Mds € - Budget de l'Éducation nationale 2025" },
-    { value: 25257945836, label: "25,3Mds € - Budget de la sécurité intérieure 2025" },
-    { value: 15000000000, label: "15Mds € - Tunnel sous la Manche" },
-    { value: 30000000000, label: "30Mds € - Projet Manhattan" },
-    { value: 100000000000, label: "100Mds € - Plan Mésmer" },
-    { value: 280000000000, label: "280Mds € - Programme Apollo" },
-    { value: 13000000000, label: "13Mds € - Grand collisionneur de hadrons" },
-    { value: 150000000000, label: "150Mds € - Station spatiale internationale" },
-    { value: 25000000000, label: "25Mds € - Projet ITER" },
-    { value: 12000000000, label: "12Mds € - Tunnel de base du Gothard" },
-    { value: 4000000000, label: "4Mds € - Grand canal de Suez" },
-    { value: 5800000000, label: "5,8Mds € - Canal de Panama" },
-    { value: 100000000, label: "100M € - Canal du Midi" },
-    { value: 32000000000, label: "32Mds € - Centrale de Hinkley Point C" },
-    { value: 21704135923, label: "21,7Mds € - Budget de la transition écologique 2025" },
-    { value: 12682852196, label: "12,7Mds € - Budget de la justice 2025" },
-    { value: 10000000, label: "10M € - Tour Eiffel" },
-    { value: 100000000, label: "100M € - Mont-Saint-Michel" },
-    { value: 5000000, label: "5M € - Arc de Triomphe" },
-    { value: 15000000, label: "15M € - Opéra Garnier" },
-    { value: 100000000, label: "100M € - Château de Versailles" },
-    { value: 2000000000, label: "2Mds € - Centre Pompidou" },
-    { value: 2500000000, label: "2,5Mds € - Grande Arche de La Défense" },
-    { value: 1500000000, label: "1,5Mds € - Opéra Bastille" },
-    { value: 150000000, label: "150M € - Pyramide du Louvre" },
-    { value: 400000000, label: "400M € - Stade de France" },
-    { value: 700000000, label: "700M € - Pont de Normandie" },
-    { value: 400000000, label: "400M € - Pont de Millau" },
-    { value: 50000000, label: "50M € - Jardin du Luxembourg" },
-    { value: 3456994135, label: "3,5Mds € - Budget des affaires étrangères 2025" },
-    { value: 3918028319, label: "3,9Mds € - Budget de la culture 2025" },
-    { value: 20009645382, label: "20,0Mds € - Budget du travail et emploi 2025" },
-    { value: 12000000000000, label: "12.000Mds € - Valeur totale de l'or dans le monde (210.000 tonnes à 60.000€/kg)" },
-    { value: 1300000000000, label: "1.300Mds € - Valeur totale du Bitcoin en circulation (19,9M BTC à 65.000€/BTC)" },
-    { value: 6600000000, label: "6,6Mds € - Coût des JO Paris 2024" },
-    { value: 9000000000, label: "9,0Mds € - Coût d'un sous-marin nucléaire français (classe Suffren)" },
-    { value: 24000000000, label: "24,0Mds € - Coût d'une centrale nucléaire EPR (comme Flamanville)" },
-    { value: 10000000000, label: "10,0Mds € - Coût d'un porte-avions nucléaire nouvelle génération (PANG)" },
-    { value: 100000000, label: "100M € - Coût d'une fusée Ariane 6 (lancement)" },
-    { value: 250000000000, label: "250Mds € - Fortune de Bernard Arnault (2025)" },
-    { value: 3000000000000, label: "3.000Mds € - Valeur boursière d'Apple (2025)" },
-    { value: 3000000000000, label: "3.000Mds € - PIB annuel de la France (2025)" },
-    { value: 15000000000000, label: "15.000Mds € - Coût économique global de la pandémie de COVID-19" },
-    { value: 140000000000, label: "140Mds € - Coût de l'ouragan Katrina (2025 ajusté)" },
-    { value: 190000000000, label: "190Mds € - Budget annuel de l'Union Européenne" }
+    { id: "btc_spot", value: 65000, label: "le prix d'un Bitcoin" },
+    { id: "gold_spot", value: 2000, label: "le prix d'une once d'or" },
+    { value: 313000000, label: "le budget annuel de l'UNESCO (2025)" },
+    { value: 40000000, label: "le salaire annuel de Kylian Mbappé" },
+    { value: 7000000000, label: "les dons annuels de la Fondation Gates" },
+    { value: 150000000, label: "le prix record d'une œuvre de Basquiat" },
+    { value: 500000000, label: "la valeur d'une ETI (Entreprise de Taille Intermédiaire)" },
+    { value: 300000000, label: "le prix d'un penthouse record à Monaco" },
+    { value: 7000000, label: "le salaire annuel moyen d'un PDG du CAC 40" },
+    { value: 280000000, label: "le coût de l'avion présidentiel français (A330)" },
+    { value: 150000000, label: "le prix d'un superyacht de luxe" },
+    { value: 340000000, label: "le budget d'Avatar (ajusté inflation)" },
+    { value: 50500000000, label: "le budget du ministère des Armées (2025)" },
+    { value: 64500000000, label: "le budget de l'Éducation nationale (2025)" },
+    { value: 17000000000, label: "le budget de la sécurité intérieure (2025)" },
+    { value: 25000000000, label: "le coût du tunnel sous la Manche" },
+    { value: 40000000000, label: "le coût du Projet Manhattan" },
+    { value: 400000000000, label: "le coût du Plan Messmer" },
+    { value: 280000000000, label: "le coût du programme Apollo" },
+    { value: 13000000000, label: "le coût du CERN (LHC)" },
+    { value: 150000000000, label: "le coût de la Station spatiale internationale (ISS)" },
+    { value: 25000000000, label: "le coût du Projet ITER" },
+    { value: 12000000000, label: "le coût du tunnel de base du Gothard" },
+    { value: 40000000000, label: "le coût de la centrale de Hinkley Point C" },
+    { value: 21704135923, label: "le budget de la transition écologique (2025)" },
+    { value: 10700000000, label: "le budget de la Justice (2025)" },
+    { value: 40000000, label: "la construction de la Tour Eiffel" },
+    { value: 185000000, label: "la restauration du Mont-Saint-Michel" },
+    { value: 75000000, label: "la construction de l'Arc de Triomphe" },
+    { value: 95000000, label: "la construction de l'Opéra Garnier" },
+    { value: 800000000, label: "la construction du Centre Pompidou" },
+    { value: 800000000, label: "la construction de la Grande Arche de La Défense" },
+    { value: 800000000, label: "la construction de l'Opéra Bastille" },
+    { value: 600000000, label: "le coût de la Pyramide du Louvre" },
+    { value: 800000000, label: "le coût du Stade de France" },
+    { value: 700000000, label: "le coût du Pont de Normandie" },
+    { value: 600000000, label: "le coût du Viaduc de Millau" },
+    { value: 3500000000, label: "le budget des Affaires étrangères (2025)" },
+    { value: 4000000000, label: "le budget de la Culture (2025)" },
+    { value: 20000000000, label: "le budget du Travail et de l'Emploi (2025)" },
+    { id: "gold_market_cap", value: 16800000000000, label: "la valeur de l'or mondial" },
+    { id: "btc_market_cap", value: 1900000000000, label: "la valeur de tous les Bitcoins" },
+    { id: "apple_market_cap", value: 3000000000000, label: "la valeur boursière d'Apple" },
+    { value: 6650000000, label: "le coût public des JO Paris 2024" },
+    { value: 1500000000, label: "le prix d'un sous-marin Suffren" },
+    { value: 19000000000, label: "le coût de la centrale EPR de Flamanville" },
+    { value: 10000000000, label: "le coût du porte-avions PANG" },
+    { value: 100000000, label: "le coût d'un lancement d'Ariane 6" },
+    { value: 190000000000, label: "la fortune de Bernard Arnault (2025)" },
+    { value: 3000000000000, label: "la valeur boursière d'Apple" },
+    { value: 2900000000000, label: "le PIB de la France (2025)" },
+    { value: 190000000000, label: "le budget annuel de l'UE" },
+    { value: 0.5, label: "une portion de frites à la cantine" },
+    { value: 1, label: "une double portion de frites à la cantine" },
+    { value: 50000, label: "un poste d'infirmière (coût annuel)" },
+    { value: 50000, label: "un poste de policier (coût annuel)" },
+    { value: 50000, label: "un poste de pompier (coût annuel)" },
+    { value: 55000, label: "un poste de professeur (coût annuel)" },
+    { value: 40000, label: "un poste de nounou en crèche (coût annuel)" },
+    { value: 192468, label: "le salaire annuel d'Emmanuel Macron" },
+    { value: 91648, label: "le salaire annuel d'un député" },
+    { value: 91648, label: "le salaire annuel d'un sénateur" },
+    { value: 128304, label: "le salaire annuel d'un ministre" }
 ];
 
+let lastIndex = -1;
+
 /**
- * Obtient un exemple aléatoire du tableau
+ * Obtient un exemple aléatoire du tableau (différent du précédent)
  * @returns {Object} Un objet exemple avec value et label
  */
 export function getRandomExample() {
-    const randomIndex = Math.floor(Math.random() * examples.length);
+    if (examples.length <= 1) return examples[0];
+
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * examples.length);
+    } while (randomIndex === lastIndex);
+
+    lastIndex = randomIndex;
     return examples[randomIndex];
+}
+
+/**
+ * Met à jour une valeur d'exemple par id (si présent)
+ * @param {string} id
+ * @param {number} value
+ */
+export function updateExampleValueById(id, value) {
+    if (!id) return;
+    const entry = examples.find(ex => ex.id === id);
+    if (!entry) return;
+    if (typeof value === 'number' && isFinite(value)) {
+        entry.value = value;
+    }
 }

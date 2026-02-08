@@ -1,0 +1,94 @@
+/* ============================================
+    ANIMATIONS PREMIUM - MODULES FACILEMENT ACTIVABLES
+    ============================================
+    
+    POUR ACTIVER UNE ANIMATION : ajoutez la classe correspondante à l'élément HTML
+    POUR DESACTIVER : retirez la classe
+    
+    Toutes ces animations sont compatibles entre elles
+*/
+
+
+
+/* ----------------------------------------
+   4. SHIMMER BUTTON - Reflet lumineux sur les boutons
+   Classe à ajouter : .shimmer-btn
+   Compatible avec : toutes les autres
+   ---------------------------------------- */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(120%);
+    }
+}
+
+.shimmer-btn,
+.mode-toggle-btn.active {
+    position: relative;
+    overflow: hidden;
+    background: var(--gold-500);
+}
+
+.shimmer-btn::before,
+.mode-toggle-btn.active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 40%,
+            rgba(255, 255, 255, 0.7) 50%,
+            rgba(255, 255, 255, 0.2) 60%,
+            transparent 100%);
+    transform: translateX(-120%);
+    animation: shimmer 3s ease-in-out infinite;
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* ----------------------------------------
+   3b. TITLE SHIMMER - Reflet lumineux sur les lettres du titre
+   Classe à ajouter : .title-shimmer
+   Compatible avec : title-glow
+   ---------------------------------------- */
+@keyframes titleShimmerPulse {
+    0% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
+
+.title-shimmer {
+    position: relative;
+}
+
+.title-shimmer::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.35) 40%,
+            rgba(255, 255, 255, 0.85) 50%,
+            rgba(255, 255, 255, 0.35) 60%,
+            transparent 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    opacity: 0.25;
+    animation: titleShimmerPulse 2.8s ease-in-out infinite;
+    will-change: opacity;
+    pointer-events: none;
+}

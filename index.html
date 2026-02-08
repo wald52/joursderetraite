@@ -2,55 +2,53 @@
 <html lang="fr" class="dark">
 
 <head>
+    <!-- Meta Tags & SEO -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="preload" href="bateaucroisiere.png" as="image" fetchpriority="high">
+    <link rel="preload" href="style.css" as="style">
     <meta name="description"
         content="Combien de temps représente un montant en années, mois, jours de retraites versées en France ?">
+    <meta name="theme-color" content="#0a192f">
     <title>Jours de Retraite</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        html,
+        body {
+            background: #0a192f;
+        }
+    </style>
 
-    <!-- Open Graph -->
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wald52.github.io/joursderetraite/">
     <meta property="og:title" content="Jours de Retraite">
     <meta property="og:description"
         content="Découvrez l'équivalent temps de cotisations de retraite pour n'importe quel montant.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="/icon-512x512.png">
+    <meta property="og:image" content="icon-512x512.png">
+    <meta property="og:site_name" content="Jours de Retraite">
     <meta property="og:locale" content="fr_FR">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://wald52.github.io/joursderetraite/">
     <meta name="twitter:title" content="Jours de Retraite">
     <meta name="twitter:description"
         content="Découvrez l'équivalent temps de cotisations de retraite pour n'importe quel montant.">
-    <meta name="twitter:image" content="/icon-512x512.png">
+    <meta name="twitter:image" content="icon-512x512.png">
 
-    <!-- Font Awesome & Tailwind -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            900: '#0a192f',
-                            800: '#112240',
-                            700: '#1d3557',
-                        },
-                        gold: {
-                            400: '#e6c55a',
-                            500: '#d4af37',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <script type="module" src="js/main.js"></script>
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/premium-animations.css">
+    <script type="module" src="js/main.js"></script>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a192f">
+
+    <!-- iOS & Android PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Jours Retraite">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 
 <body>
@@ -68,353 +66,671 @@
             <!-- Header avec bateau stylisé -->
             <header class="header">
                 <div class="header-content">
-                    <img src="bateaucoisiere.png" alt="Bateau de croisière" class="header-boat" />
+                    <div class="header-boat-wrap">
+                        <img src="bateaucroisiere.png" alt="Bateau de croisière" class="header-boat" width="64"
+                            height="64" fetchpriority="high" />
+                    </div>
                     <div class="header-text">
-                        <h1 class="header-title">Jours de Retraite</h1>
-                        <p class="header-subtitle">Découvrez les équivalents des retraites versées en France en 2025</p>
+                        <h1 class="header-title title-shimmer title-reveal" data-text="Jours de Retraite">Jours de
+                            Retraite</h1>
+                        <p class="header-subtitle fade-in-slide-up reveal-1">Découvrez les équivalents des retraites
+                            versées en France en 2025</p>
                     </div>
                 </div>
             </header>
 
             <!-- Toggle de mode -->
-            <div class="mode-toggle">
+            <div class="mode-toggle fade-in-slide-up reveal-2">
                 <button id="temporal-mode-btn" class="mode-toggle-btn active" onclick="switchMode('temporal')">
-                    <i class="fas fa-clock mr-1"></i>Temporel
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-1">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>Temporel
                 </button>
                 <button id="financial-mode-btn" class="mode-toggle-btn" onclick="switchMode('financial')">
-                    <i class="fas fa-chart-line mr-1"></i>Financier
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-1">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
+                    </svg>Financier
                 </button>
             </div>
 
-            <!-- MODE TEMPOREL -->
-            <div id="temporal-inputs">
-                <!-- Carte montant -->
-                <div class="card">
-                    <div class="card-label">💰 Montant à convertir</div>
-                    <div class="input-wrapper">
-                        <input type="text" inputmode="numeric" pattern="[0-9.,]*" id="amount"
-                            placeholder="Ex: 24 000 000" class="input-field"
-                            oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this); handleInput()"
-                            onblur="formatNumberOnBlur(this)">
-                        <i class="fas fa-euro-sign input-icon"></i>
+            <div class="modes-container" data-active-mode="temporal">
+                <!-- MODE TEMPOREL -->
+                <div id="temporal-inputs" class="mode-content">
+                    <!-- Carte montant -->
+                    <div class="card fade-in-slide-up card-sheen reveal-3">
+                        <div class="card-label"> Montant à convertir</div>
+                        <div class="input-wrapper">
+                            <input type="text" inputmode="numeric" pattern="[0-9.,]*" id="amount"
+                                placeholder="Ex: 24 000 000" class="input-field"
+                                oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this); handleInput()"
+                                onblur="formatNumberOnBlur(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="input-icon">
+                                <path d="M4 10h12" />
+                                <path d="M4 14h9" />
+                                <path
+                                    d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" />
+                            </svg>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Bouton exemple -->
-                <div class="example-section">
-                    <button class="example-btn" onclick="setRandomExample()">
-                        <svg class="example-btn-border" preserveAspectRatio="none">
-                            <rect class="example-btn-rect" x="2" y="2" rx="12" ry="12" pathLength="100" />
-                        </svg>
-                        <i class="fas fa-lightbulb"></i>
-                        <span>Charger un exemple</span>
-                    </button>
-                    <p id="current-example" class="current-example"></p>
-                </div>
-
-                <!-- Bouton calculer -->
-                <div class="btn-group">
-                    <button class="btn btn-primary"
-                        onclick="formatNumberOnBlur(document.getElementById('amount')); calculate();">
-                        <i class="fas fa-calculator"></i>
-                        Calculer
-                    </button>
-                    <button class="btn btn-secondary" onclick="resetForm()">
-                        <i class="fas fa-redo"></i>
-                        Effacer
-                    </button>
-                </div>
-
-                <!-- Résultat temporel -->
-                <div id="result-section-temporal" class="result-section hidden">
-                    <div class="result-card">
-                        <button class="copy-btn" onclick="copyResult('temporal')">
-                            <i class="fas fa-copy"></i>
+                    <!-- Bouton exemple -->
+                    <div class="example-section fade-in-slide-up reveal-4">
+                        <button class="example-btn" onclick="setRandomExample()">
+                            <svg class="example-btn-border" preserveAspectRatio="none">
+                                <rect class="example-btn-rect" x="2" y="2" rx="12" ry="12" pathLength="100" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="mr-1">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                                <path d="M8 12h8" />
+                                <path d="M8 16h6" />
+                            </svg>
+                            <span>Charger un exemple</span>
                         </button>
-                        <div class="result-label">⏱️ Équivalent retraite</div>
-                        <div id="result-text-temporal" class="result-value"></div>
-
+                        <p id="current-example" class="current-example"></p>
                     </div>
 
-                    <div id="share-section-temporal" class="share-section">
-                        <div class="share-buttons">
-                            <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
-                                <i class="fab fa-facebook-f"></i>
+                    <!-- Bouton calculer -->
+                    <div class="fade-in-slide-up reveal-5" style="width: 100%;">
+                        <div class="btn-group">
+                            <button class="btn btn-primary shimmer-btn"
+                                onclick="formatNumberOnBlur(document.getElementById('amount')); calculate();">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="mr-1">
+                                    <rect width="16" height="20" x="4" y="2" rx="2" />
+                                    <line x1="8" x2="16" y1="6" y2="6" />
+                                    <line x1="16" x2="16" y1="14" y2="18" />
+                                    <path d="M16 10h.01" />
+                                    <path d="M12 10h.01" />
+                                    <path d="M8 10h.01" />
+                                    <path d="M12 14h.01" />
+                                    <path d="M8 14h.01" />
+                                    <path d="M12 18h.01" />
+                                    <path d="M8 18h.01" />
+                                </svg>
+                                Calculer
                             </button>
-                            <button class="share-btn twitter" onclick="shareOnSocial('twitter')" title="X">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                            <button class="share-btn nostr" onclick="shareOnSocial('nostr')" title="Nostr">
-                                <img src="nostr-logo.png" alt="Nostr" class="share-icon-img">
-                            </button>
-                            <button class="share-btn linkedin" onclick="shareOnSocial('linkedin')" title="LinkedIn">
-                                <i class="fab fa-linkedin-in"></i>
-                            </button>
-                            <button class="share-btn instagram" onclick="shareOnSocial('instagram')" title="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </button>
-                            <button class="share-btn tiktok" onclick="shareOnSocial('tiktok')" title="TikTok">
-                                <i class="fab fa-tiktok"></i>
-                            </button>
-                            <button class="share-btn discord" onclick="shareOnSocial('discord')" title="Discord">
-                                <i class="fab fa-discord"></i>
-                            </button>
-                            <button class="share-btn" onclick="shareVia('email')" title="Email">
-                                <i class="fas fa-envelope"></i>
-                            </button>
-                            <button class="share-btn" onclick="shareVia('sms')" title="SMS">
-                                <i class="fas fa-comment-sms"></i>
-                            </button>
-                            <button class="share-btn native" onclick="nativeShare('temporal')">
-                                <i class="fas fa-share"></i>
-                                <span>Partager</span>
+                            <button class="btn btn-secondary" onclick="resetForm()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="mr-1">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                                    <path d="M21 3v5h-5" />
+                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                                    <path d="M3 21v-5h5" />
+                                </svg>
+                                Réinitialiser
                             </button>
                         </div>
                     </div>
+
+                    <!-- Résultat temporel -->
+                    <div id="result-section-temporal" class="result-section hidden">
+                        <div class="result-card">
+                            <button class="copy-btn" onclick="copyResult('temporal')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                            </button>
+                            <div class="result-label">⏱️ Équivalent retraite</div>
+                            <div id="result-text-temporal" class="result-value"></div>
+
+                        </div>
+
+                        <div id="share-section-temporal" class="share-section">
+                            <div class="share-buttons">
+                                <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn twitter" onclick="shareOnSocial('twitter')" title="X">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn nostr" onclick="shareOnSocial('nostr')" title="Nostr">
+                                    <img data-src="nostr-logo.png"
+                                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                        alt="Nostr" class="share-icon-img pwa-deferred-img" width="20" height="20">
+                                </button>
+                                <button class="share-btn linkedin" onclick="shareOnSocial('linkedin')" title="LinkedIn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                        <rect width="4" height="12" x="2" y="9" />
+                                        <circle cx="4" cy="4" r="2" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn instagram" onclick="shareOnSocial('instagram')"
+                                    title="Instagram">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn tiktok" onclick="shareOnSocial('tiktok')" title="TikTok">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn discord" onclick="shareOnSocial('discord')" title="Discord">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.069.069 0 0 0-.032.027C.533 9.048-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.125-.094.249-.192.37-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.196.37.291a.077.077 0 0 1-.006.127 12.29 12.29 0 0 1-1.872.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn" onclick="shareVia('email')" title="Email">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="20" height="16" x="2" y="4" rx="2" />
+                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn" onclick="shareVia('sms')" title="SMS">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn native" onclick="nativeShare('temporal')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="mr-1">
+                                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                        <polyline points="16 6 12 2 8 6" />
+                                        <line x1="12" x2="12" y1="2" y2="15" />
+                                    </svg>
+                                    <span>Partager</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- MODE FINANCIER -->
-            <div id="financial-inputs" class="hidden">
-                <div class="card">
-                    <div class="card-label">🏷️ Type de comparaison</div>
-                    <div class="input-wrapper">
-                        <select id="object-type" class="input-field" onchange="updateObjectPrice()">
-                            <option value="">Sélectionnez un objet...</option>
-                            <option value="EPR" data-price="24000000000">EPR - Centrale nucléaire (24 Mds €)</option>
-                            <option value="Sous-marin" data-price="9000000000">Sous-marin nucléaire (9 Mds €)</option>
-                            <option value="Porte-avions" data-price="10000000000">Porte-avions (10 Mds €)</option>
-                            <option value="JO" data-price="6600000000">JO Paris 2024 (6,6 Mds €)</option>
-                            <option value="Villa" data-price="2500000000">Villa Monaco (2,5 Mds €)</option>
-                            <option value="Yacht" data-price="60000000">Yacht luxe (60 M€)</option>
-                            <option value="Mbappé" data-price="40000000">Salaire Mbappé (40 M€)</option>
-                            <option value="PDG" data-price="80000000">PDG CAC 40 (80 M€)</option>
-                            <option value="Ministère Armées" data-price="59946338573">Armées 2025 (59,9 Mds €)</option>
-                            <option value="Ministère Éducation" data-price="88642000013">Éducation 2025 (88,6 Mds €)
-                            </option>
-                            <option value="Tunnel Manche" data-price="15000000000">Tunnel Manche (15 Mds €)</option>
-                            <option value="Apollo" data-price="280000000000">Apollo (280 Mds €)</option>
-                            <option value="Station spatiale" data-price="150000000000">ISS (150 Mds €)</option>
-                            <option value="ITER" data-price="25000000000">ITER (25 Mds €)</option>
-                            <option value="Millau" data-price="400000000">Pont Millau (400 M€)</option>
-                            <option value="Tour Eiffel" data-price="10000000">Tour Eiffel (10 M€)</option>
-                            <option value="Fortune Arnault" data-price="250000000000">Fortune Arnault (250 Mds €)
-                            </option>
-                            <option value="PIB France" data-price="3000000000000">PIB France (3.000 Mds €)</option>
-                            <option value="autre">Autre objet personnalisé...</option>
-                        </select>
-                    </div>
-
-                    <div id="custom-object-input" class="hidden">
-                        <input type="text" id="object-name" placeholder="Nom de l'objet" class="input-field"
-                            style="padding-left: 1rem;">
-                    </div>
-
-                    <div class="card-label">💵 Montant à convertir</div>
-                    <div class="input-wrapper">
-                        <input type="text" inputmode="numeric" id="object-price" placeholder="24 000 000"
-                            class="input-field" oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
-                            onblur="formatNumberOnBlur(this)">
-                        <i class="fas fa-euro-sign input-icon"></i>
-                    </div>
-
-                    <!-- Champ Période de retraite (Masqué par défaut mais fonctionnel = 1 an) -->
-                    <div id="retirement-period-container" style="display: none;">
-                        <div class="card-label">📅 Période de retraite</div>
+                <!-- MODE FINANCIER -->
+                <div id="financial-inputs" class="mode-content" hidden>
+                    <div class="card fade-in-slide-up card-sheen">
+                        <div class="card-label">🏷️ Type de comparaison</div>
                         <div class="input-wrapper">
-                            <select id="time-period" class="input-field">
-                                <option value="1">1 an</option>
-                                <option value="0.5">6 mois</option>
-                                <option value="0.25">3 mois</option>
-                                <option value="0.1">1 mois</option>
-                                <option value="0.033">10 jours</option>
-                                <option value="0.01">1 jour</option>
-                                <option value="custom">Personnalisé...</option>
+                            <div class="custom-dropdown" id="object-type-dropdown">
+                                <div class="dropdown-trigger" id="object-type-trigger">
+                                    <span class="trigger-text">Sélectionnez un objet...</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="trigger-icon">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </div>
+                                <div class="dropdown-options" id="object-type-options">
+                                    <!-- Options will be populated or styled via CSS/JS -->
+                                    <div class="dropdown-option" data-value="Suffren" data-price="1500000000">sous-marin
+                                        nucléaire Suffren</div>
+                                    <div class="dropdown-option" data-value="EPR" data-price="19000000000">centrale
+                                        nucléaire EPR de Flamanville</div>
+                                    <div class="dropdown-option" data-value="PANG" data-price="10000000000">porte-avions
+                                        nucléaire (PANG)</div>
+                                    <div class="dropdown-option" data-value="JO" data-price="6650000000">coût public des
+                                        JO de Paris 2024</div>
+                                    <div class="dropdown-option" data-value="Messmer" data-price="400000000000">
+                                        programme nucléaire Messmer</div>
+                                    <div class="dropdown-option" data-value="Apollo" data-price="280000000000">programme
+                                        spatial Apollo</div>
+                                    <div class="dropdown-option" data-value="ISS" data-price="150000000000">Station
+                                        Spatiale Internationale (ISS)</div>
+                                    <div class="dropdown-option" data-value="Villa Monaco" data-price="300000000">
+                                        penthouse record à Monaco</div>
+                                    <div class="dropdown-option" data-value="Superyacht" data-price="150000000">
+                                        superyacht de luxe</div>
+                                    <div class="dropdown-option" data-value="Mbappé" data-price="40000000">salaire
+                                        annuel de Kylian Mbappé</div>
+                                    <div class="dropdown-option" data-value="PDG" data-price="7000000">salaire annuel
+                                        moyen d'un PDG du CAC 40</div>
+                                    <div class="dropdown-option" data-value="UNESCO" data-price="313000000">budget
+                                        annuel de l'UNESCO (2025)</div>
+                                    <div class="dropdown-option" data-value="Education" data-price="64500000000">budget
+                                        de l'Éducation nationale (2025)</div>
+                                    <div class="dropdown-option" data-value="Armées" data-price="50500000000">budget du
+                                        ministère des Armées (2025)</div>
+                                    <div class="dropdown-option" data-value="Justice" data-price="10700000000">budget de
+                                        la Justice (2025)</div>
+                                    <div class="dropdown-option" data-value="Tunnel Manche" data-price="25000000000">
+                                        construction du Tunnel sous la Manche</div>
+                                    <div class="dropdown-option" data-value="Tour Eiffel" data-price="40000000">
+                                        construction de la Tour Eiffel</div>
+                                    <div class="dropdown-option" data-value="Arc de Triomphe" data-price="75000000">
+                                        construction de l'Arc de Triomphe</div>
+                                    <div class="dropdown-option" data-value="Opéra Garnier" data-price="95000000">
+                                        construction de l'Opéra Garnier</div>
+                                    <div class="dropdown-option" data-value="Stade de France" data-price="800000000">
+                                        construction du Stade de France</div>
+                                    <div class="dropdown-option" data-value="Fortune Arnault" data-price="190000000000">
+                                        fortune de Bernard Arnault</div>
+                                    <div class="dropdown-option" data-value="PIB France" data-price="2900000000000">PIB
+                                        annuel de la France</div>
+                                    <div class="dropdown-option" data-value="Frites" data-price="0.5">portion de frites
+                                        à la cantine</div>
+                                    <div class="dropdown-option" data-value="Frites Double" data-price="1">double
+                                        portion de frites à la cantine</div>
+                                    <div class="dropdown-option" data-value="Infirmiere" data-price="50000">poste
+                                        d'infirmière</div>
+                                    <div class="dropdown-option" data-value="Policier" data-price="50000">poste de
+                                        policier</div>
+                                    <div class="dropdown-option" data-value="Pompier" data-price="50000">poste de
+                                        pompier</div>
+                                    <div class="dropdown-option" data-value="Professeur" data-price="55000">poste de
+                                        professeur</div>
+                                    <div class="dropdown-option" data-value="Nounou" data-price="40000">poste de nounou
+                                        en crèche</div>
+                                    <div class="dropdown-option" data-value="Macron" data-price="192468">salaire annuel
+                                        d'Emmanuel Macron</div>
+                                    <div class="dropdown-option" data-value="Depute" data-price="91648">salaire annuel
+                                        d'un député</div>
+                                    <div class="dropdown-option" data-value="Senateur" data-price="91648">salaire annuel
+                                        d'un sénateur</div>
+                                    <div class="dropdown-option" data-value="Ministre" data-price="128304">salaire
+                                        annuel d'un ministre</div>
+                                    <div class="dropdown-option" data-value="autre">Autre objet personnalisé...</div>
+                                </div>
+                            </div>
+                            <!-- Native select hidden - still used for logic compatibility -->
+                            <select id="object-type" class="hidden-select" onchange="updateObjectPrice()">
+                                <option value="">Sélectionnez un objet...</option>
+                                <option value="Suffren" data-price="1500000000">sous-marin nucléaire Suffren</option>
+                                <option value="EPR" data-price="19000000000">centrale nucléaire EPR de Flamanville
+                                </option>
+                                <option value="PANG" data-price="10000000000">porte-avions nucléaire (PANG)</option>
+                                <option value="JO" data-price="6650000000">coût public des JO de Paris 2024</option>
+                                <option value="Messmer" data-price="400000000000">programme nucléaire Messmer</option>
+                                <option value="Apollo" data-price="280000000000">programme spatial Apollo</option>
+                                <option value="ISS" data-price="150000000000">Station Spatiale Internationale (ISS)
+                                </option>
+                                <option value="Villa Monaco" data-price="300000000">penthouse record à Monaco</option>
+                                <option value="Superyacht" data-price="150000000">superyacht de luxe</option>
+                                <option value="Mbappé" data-price="40000000">salaire annuel de Kylian Mbappé</option>
+                                <option value="PDG" data-price="7000000">salaire annuel moyen d'un PDG du CAC 40
+                                </option>
+                                <option value="UNESCO" data-price="313000000">budget annuel de l'UNESCO (2025)</option>
+                                <option value="Education" data-price="64500000000">budget de l'Éducation nationale
+                                    (2025)</option>
+                                <option value="Armées" data-price="50500000000">budget du ministère des Armées (2025)
+                                </option>
+                                <option value="Justice" data-price="10700000000">budget de la Justice (2025)</option>
+                                <option value="Tunnel Manche" data-price="25000000000">construction du Tunnel sous la
+                                    Manche</option>
+                                <option value="Tour Eiffel" data-price="40000000">construction de la Tour Eiffel
+                                </option>
+                                <option value="Arc de Triomphe" data-price="75000000">construction de l'Arc de Triomphe
+                                </option>
+                                <option value="Opéra Garnier" data-price="95000000">construction de l'Opéra Garnier
+                                </option>
+                                <option value="Stade de France" data-price="800000000">construction du Stade de France
+                                </option>
+                                <option value="Fortune Arnault" data-price="190000000000">fortune de Bernard Arnault
+                                </option>
+                                <option value="PIB France" data-price="2900000000000">PIB annuel de la France</option>
+                                <option value="Frites" data-price="0.5">portion de frites à la cantine</option>
+                                <option value="Frites Double" data-price="1">double portion de frites à la cantine
+                                </option>
+                                <option value="Infirmiere" data-price="50000">poste d'infirmière</option>
+                                <option value="Policier" data-price="50000">poste de policier</option>
+                                <option value="Pompier" data-price="50000">poste de pompier</option>
+                                <option value="Professeur" data-price="55000">poste de professeur</option>
+                                <option value="Nounou" data-price="40000">poste de nounou en crèche</option>
+                                <option value="Macron" data-price="192468">salaire annuel d'Emmanuel Macron</option>
+                                <option value="Depute" data-price="91648">salaire annuel d'un député</option>
+                                <option value="Senateur" data-price="91648">salaire annuel d'un sénateur</option>
+                                <option value="Ministre" data-price="128304">salaire annuel d'un ministre</option>
+                                <option value="autre">Autre objet personnalisé...</option>
                             </select>
                         </div>
 
-                        <div id="custom-period-container" class="hidden">
-                            <input type="text" inputmode="numeric" id="custom-period" placeholder="Durée en années"
-                                class="input-field" value="1">
+                        <div id="custom-object-input" class="hidden">
+                            <input type="text" id="object-name" placeholder="Nom de l'objet" class="input-field"
+                                style="padding-left: 1rem;">
+                        </div>
+
+                        <div class="card-label">💵 Montant à convertir</div>
+                        <div class="input-wrapper">
+                            <input type="text" inputmode="numeric" id="object-price" placeholder="24 000 000"
+                                class="input-field" oninput="allowOnlyNumbersAndComma(this); formatNumberInput(this)"
+                                onblur="formatNumberOnBlur(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="input-icon">
+                                <path d="M4 10h12" />
+                                <path d="M4 14h9" />
+                                <path
+                                    d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" />
+                            </svg>
+                        </div>
+
+                        <!-- Champ Période de retraite (Masqué par défaut mais fonctionnel = 1 an) -->
+                        <div id="retirement-period-container" style="display: none;">
+                            <div class="card-label">📅 Période de retraite</div>
+                            <div class="input-wrapper">
+                                <select id="time-period" class="input-field">
+                                    <option value="1">1 an</option>
+                                    <option value="0.5">6 mois</option>
+                                    <option value="0.25">3 mois</option>
+                                    <option value="0.1">1 mois</option>
+                                    <option value="0.033">10 jours</option>
+                                    <option value="0.01">1 jour</option>
+                                    <option value="custom">Personnalisé...</option>
+                                </select>
+                            </div>
+
+                            <div id="custom-period-container" class="hidden">
+                                <input type="text" inputmode="numeric" id="custom-period" placeholder="Durée en années"
+                                    class="input-field" value="1">
+                            </div>
+                        </div>
+
+                        <!-- Bouton Comparer déplacé ici -->
+                        <div class="btn-group" style="margin-top: 1.5rem;">
+                            <button class="btn btn-primary shimmer-btn" onclick="calculateComparison()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="mr-1">
+                                    <path d="m21 7-4-4-4 4" />
+                                    <path d="M17 3v18" />
+                                    <path d="m3 17 4 4 4-4" />
+                                    <path d="M7 21V3" />
+                                </svg>
+                                Comparer
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="calculateComparison()">
-                        <i class="fas fa-exchange-alt"></i>
-                        Comparer
-                    </button>
-                </div>
+                    <!-- Résultat financier -->
+                    <div id="result-section-financial" class="result-section hidden">
+                        <div class="result-card">
+                            <button class="copy-btn" onclick="copyResult('financial')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                            </button>
+                            <div class="result-label">📊 Équivalent financier</div>
+                            <div id="result-text-financial" class="result-value"></div>
+                            <div id="comparison-result-text-financial" class="hidden"></div>
+                        </div>
 
-                <!-- Résultat financier -->
-                <div id="result-section-financial" class="result-section hidden">
-                    <div class="result-card">
-                        <button class="copy-btn" onclick="copyResult('financial')">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <div class="result-label">📊 Équivalent financier</div>
-                        <div id="result-text-financial" class="result-value"></div>
-                        <div id="comparison-result-text-financial" class="hidden"></div>
-                    </div>
-
-                    <div id="share-section-financial" class="share-section">
-                        <div class="share-buttons">
-                            <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-                            <button class="share-btn twitter" onclick="shareOnSocial('twitter')" title="X">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                            <button class="share-btn nostr" onclick="shareOnSocial('nostr')" title="Nostr">
-                                <img src="nostr-logo.png" alt="Nostr" class="share-icon-img">
-                            </button>
-                            <button class="share-btn linkedin" onclick="shareOnSocial('linkedin')" title="LinkedIn">
-                                <i class="fab fa-linkedin-in"></i>
-                            </button>
-                            <button class="share-btn instagram" onclick="shareOnSocial('instagram')" title="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </button>
-                            <button class="share-btn tiktok" onclick="shareOnSocial('tiktok')" title="TikTok">
-                                <i class="fab fa-tiktok"></i>
-                            </button>
-                            <button class="share-btn discord" onclick="shareOnSocial('discord')" title="Discord">
-                                <i class="fab fa-discord"></i>
-                            </button>
-                            <button class="share-btn" onclick="shareVia('email')" title="Email">
-                                <i class="fas fa-envelope"></i>
-                            </button>
-                            <button class="share-btn" onclick="shareVia('sms')" title="SMS">
-                                <i class="fas fa-comment-sms"></i>
-                            </button>
-                            <button class="share-btn native" onclick="nativeShare('financial')">
-                                <i class="fas fa-share"></i>
-                                <span>Partager</span>
-                            </button>
+                        <div id="share-section-financial" class="share-section">
+                            <div class="share-buttons">
+                                <button class="share-btn facebook" onclick="shareOnSocial('facebook')" title="Facebook">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn twitter" onclick="shareOnSocial('twitter')" title="X">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn nostr" onclick="shareOnSocial('nostr')" title="Nostr">
+                                    <img data-src="nostr-logo.png"
+                                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                        alt="Nostr" class="share-icon-img pwa-deferred-img" width="20" height="20">
+                                </button>
+                                <button class="share-btn linkedin" onclick="shareOnSocial('linkedin')" title="LinkedIn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                        <rect width="4" height="12" x="2" y="9" />
+                                        <circle cx="4" cy="4" r="2" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn instagram" onclick="shareOnSocial('instagram')"
+                                    title="Instagram">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn tiktok" onclick="shareOnSocial('tiktok')" title="TikTok">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn discord" onclick="shareOnSocial('discord')" title="Discord">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.069.069 0 0 0-.032.027C.533 9.048-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.125-.094.249-.192.37-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.196.37.291a.077.077 0 0 1-.006.127 12.29 12.29 0 0 1-1.872.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn" onclick="shareVia('email')" title="Email">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="20" height="16" x="2" y="4" rx="2" />
+                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn" onclick="shareVia('sms')" title="SMS">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z" />
+                                    </svg>
+                                </button>
+                                <button class="share-btn native" onclick="nativeShare('financial')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="mr-1">
+                                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                        <polyline points="16 6 12 2 8 6" />
+                                        <line x1="12" x2="12" y1="2" y2="15" />
+                                    </svg>
+                                    <span>Partager</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Accordéon Méthodologie -->
-            <div class="accordion" id="methodology-section">
-                <div class="accordion-header" onclick="toggleMethodology()">
-                    <span class="accordion-title">
-                        <i class="fas fa-calculator methodology-icon"></i>
-                        Méthodologie
-                    </span>
-                    <i class="fas fa-chevron-down accordion-icon"></i>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-body">
-                        <div class="infography">
-                            <svg viewBox="0 0 320 110" preserveAspectRatio="xMidYMid meet">
-                                <!-- Styles internes pour SVG -->
-                                <style>
-                                    .step-box {
-                                        fill: rgba(255, 255, 255, 0.05);
-                                        stroke: rgba(255, 255, 255, 0.1);
-                                        stroke-width: 1;
-                                        rx: 8;
-                                    }
-
-                                    .step-label {
-                                        font-size: 9px;
-                                        fill: var(--gray-400);
-                                        font-weight: 600;
-                                        text-transform: uppercase;
-                                    }
-
-                                    .step-value {
-                                        font-size: 12px;
-                                        fill: var(--white);
-                                        font-family: 'JetBrains Mono', monospace;
-                                        font-weight: 700;
-                                    }
-
-                                    .operator {
-                                        font-size: 14px;
-                                        fill: var(--gold-400);
-                                        font-weight: bold;
-                                    }
-
-                                    .final-box {
-                                        fill: rgba(212, 175, 55, 0.1);
-                                        stroke: var(--gold-400);
-                                        stroke-width: 2;
-                                        rx: 8;
-                                    }
-
-                                    .arrow {
-                                        stroke: var(--gold-400);
-                                        stroke-width: 1.5;
-                                        marker-end: url(#arrowHead);
-                                    }
-                                </style>
-
-                                <defs>
-                                    <marker id="arrowHead" markerWidth="6" markerHeight="6" refX="5" refY="3"
-                                        orient="auto">
-                                        <path d="M0,0 L6,3 L0,6 Z" fill="#d4af37" />
-                                    </marker>
-                                </defs>
-
-                                <!-- Étape 1: Montant -->
-                                <rect x="5" y="15" width="85" height="50" class="step-box" />
-                                <text x="47.5" y="35" text-anchor="middle" class="step-label">MONTANT</text>
-                                <text x="47.5" y="53" text-anchor="middle" class="step-value" fill="#d4af37">X €</text>
-
-                                <!-- Opérateur / -->
-                                <text x="100" y="45" text-anchor="middle" class="operator">÷</text>
-
-                                <!-- Étape 2: Total -->
-                                <rect x="110" y="15" width="90" height="50" class="step-box" />
-                                <text x="155" y="35" text-anchor="middle" class="step-label">TOTAL</text>
-                                <text x="155" y="53" text-anchor="middle" class="step-value">420 Mds €</text>
-
-                                <!-- Opérateur = -->
-                                <line x1="210" y1="40" x2="225" y2="40" class="arrow" />
-
-                                <!-- Étape 3: Résultat -->
-                                <rect x="235" y="10" width="80" height="60" class="final-box" />
-                                <text x="275" y="33" text-anchor="middle" class="step-label"
-                                    style="fill: var(--gold-400);">DURÉE</text>
-                                <text x="275" y="55" text-anchor="middle" class="step-value"
-                                    style="font-size: 14px; fill: var(--gold-400);">XX Jours</text>
-
-                                <!-- Annotation explicative bas -->
-                                <text x="160" y="85" text-anchor="middle" font-size="9" fill="#6c757d"
-                                    font-style="italic">
-                                    (Montant / 420 Milliards) × 365.25 jours
-                                </text>
-
-                                <!-- Source -->
-                                <text x="160" y="100" text-anchor="middle" font-size="8" fill="#4a5568">
-                                    Source: Pensions versées (CNAV/Agirc-Arrco 2025)
-                                </text>
+            <div class="fade-in-slide-up reveal-6" style="width: 100%;">
+                <div class="accordion" id="methodology-section">
+                    <div class="accordion-header" onclick="toggleMethodology()">
+                        <span class="accordion-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="methodology-icon mr-1">
+                                <rect width="16" height="20" x="4" y="2" rx="2" />
+                                <line x1="8" x2="16" y1="6" y2="6" />
+                                <line x1="16" x2="16" y1="14" y2="18" />
+                                <path d="M16 10h.01" />
+                                <path d="M12 10h.01" />
+                                <path d="M8 10h.01" />
+                                <path d="M12 14h.01" />
+                                <path d="M8 14h.01" />
+                                <path d="M12 18h.01" />
+                                <path d="M8 18h.01" />
                             </svg>
-                        </div>
+                            Méthodologie
+                        </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="accordion-icon">
+                            <path d="m6 9 6 6 6-6" />
+                        </svg>
+                    </div>
 
-                        <div class="mt-3 text-sm"
-                            style="color: var(--gray-400); font-size: 0.85rem; line-height: 1.6; text-align: center;">
-                            <p>Le calcul compare votre montant au budget annuel des retraites françaises (<strong
-                                    style="color: var(--gold-400);">420 milliards €</strong>).</p>
-                            <p class="mt-1">Le résultat exprime ce que ce montant représente en <span
-                                    style="color: var(--white); font-weight: 500;">temps de versement</span> pour
-                                l'ensemble des retraités.</p>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="infography">
+                                <svg viewBox="0 0 320 110" preserveAspectRatio="xMidYMid meet">
+                                    <!-- Styles internes pour SVG -->
+                                    <style>
+                                        .step-box {
+                                            fill: rgba(255, 255, 255, 0.05);
+                                            stroke: rgba(255, 255, 255, 0.1);
+                                            stroke-width: 1;
+                                            rx: 8;
+                                        }
+
+                                        .step-label {
+                                            font-size: 9px;
+                                            fill: var(--gray-400);
+                                            font-weight: 600;
+                                            text-transform: uppercase;
+                                        }
+
+                                        .step-value {
+                                            font-size: 12px;
+                                            fill: var(--white);
+                                            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+                                            font-weight: 700;
+                                        }
+
+                                        .operator {
+                                            font-size: 14px;
+                                            fill: var(--gold-400);
+                                            font-weight: bold;
+                                        }
+
+                                        .final-box {
+                                            fill: rgba(212, 175, 55, 0.1);
+                                            stroke: var(--gold-400);
+                                            stroke-width: 2;
+                                            rx: 8;
+                                        }
+
+                                        .arrow {
+                                            stroke: var(--gold-400);
+                                            stroke-width: 1.5;
+                                            marker-end: url(#arrowHead);
+                                        }
+                                    </style>
+
+                                    <defs>
+                                        <marker id="arrowHead" markerWidth="6" markerHeight="6" refX="5" refY="3"
+                                            orient="auto">
+                                            <path d="M0,0 L6,3 L0,6 Z" fill="#d4af37" />
+                                        </marker>
+                                    </defs>
+
+                                    <!-- Étape 1: Montant -->
+                                    <rect x="5" y="15" width="85" height="50" class="step-box" />
+                                    <text x="47.5" y="35" text-anchor="middle" class="step-label">MONTANT</text>
+                                    <text x="47.5" y="53" text-anchor="middle" class="step-value" fill="#d4af37">X
+                                        €</text>
+
+                                    <!-- Opérateur / -->
+                                    <text x="100" y="45" text-anchor="middle" class="operator">÷</text>
+
+                                    <!-- Étape 2: Total -->
+                                    <rect x="110" y="15" width="90" height="50" class="step-box" />
+                                    <text x="155" y="35" text-anchor="middle" class="step-label">TOTAL</text>
+                                    <text x="155" y="53" text-anchor="middle" class="step-value">420 Mds €</text>
+
+                                    <!-- Opérateur = -->
+                                    <line x1="210" y1="40" x2="225" y2="40" class="arrow" />
+
+                                    <!-- Étape 3: Résultat -->
+                                    <rect x="235" y="10" width="80" height="60" class="final-box" />
+                                    <text x="275" y="33" text-anchor="middle" class="step-label"
+                                        style="fill: var(--gold-400);">DURÉE</text>
+                                    <text x="275" y="55" text-anchor="middle" class="step-value"
+                                        style="font-size: 14px; fill: var(--gold-400);">XX Jours</text>
+
+                                    <!-- Annotation explicative bas -->
+                                    <text x="160" y="85" text-anchor="middle" font-size="9" fill="#6c757d"
+                                        font-style="italic">
+                                        (Montant / 420 Milliards) × 365.25 jours
+                                    </text>
+
+                                    <!-- Source -->
+                                    <text x="160" y="100" text-anchor="middle" font-size="8" fill="#4a5568">
+                                        Source: Pensions versées (CNAV/Agirc-Arrco 2025)
+                                    </text>
+                                </svg>
+                            </div>
+
+                            <div class="mt-3 text-sm"
+                                style="color: var(--gray-400); font-size: 0.85rem; line-height: 1.6; text-align: center;">
+                                <p>Le calcul compare votre montant au budget annuel des retraites françaises (<strong
+                                        style="color: var(--gold-400);">420 milliards €</strong> en 2025, incluant
+                                    régimes
+                                    de base et complémentaires).</p>
+                                <p class="mt-1">Le résultat exprime ce que ce montant représente en <span
+                                        style="color: var(--white); font-weight: 500;">temps de versement</span> pour
+                                    l'ensemble des retraités.</p>
+                                <p class="mt-2 text-xs italic">Les montants des projets historiques (ex: Tour Eiffel,
+                                    Apollo) sont convertis en <strong>Valeur ajustée de l'inflation 2025</strong> pour
+                                    tenir compte
+                                    de
+                                    l'inflation.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <footer class="app-footer">
+            <div class="footer-links fade-in reveal-8">
+                <a href="legal.html" class="footer-link">Mentions Légales</a>
+                <a href="legal.html#confidentialite" class="footer-link">Confidentialité</a>
+            </div>
+        </footer>
     </div>
 
     <!-- Snackbar PWA -->
     <div id="pwa-snackbar" class="snackbar hidden">
-        <span class="snackbar-text">Installez l'app pour un accès rapide !</span>
+        <span class="snackbar-text">Installez l'app pour un accès rapide&nbsp;!</span>
         <button class="snackbar-btn" onclick="promptInstall()">Installer</button>
         <button class="snackbar-close" onclick="dismissSnackbar()">
-            <i class="fas fa-times"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
         </button>
     </div>
 

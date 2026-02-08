@@ -1,24 +1,27 @@
 // Service worker pour l'application PWA
 
-const CACHE_NAME = 'joursderetraite-v58'; // Mise à jour du numéro de version
+const CACHE_NAME = 'joursderetraite-v68'; // Mise à jour du numéro de version
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/js/main.js',
-  '/js/modules/calculator.js',
-  '/js/modules/examples.js',
-  '/js/modules/formatting.js',
-  '/js/modules/pwa.js',
-  '/js/modules/sharing.js',
-  '/js/modules/state.js',
-  '/js/modules/theme.js',
-  '/js/modules/ui.js',
-  '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-  '/bateaucoisiere.png',
-  '/favicon.ico'
+  './',
+  'index.html',
+  'legal.html',
+  'style.css',
+  'js/main.js',
+  'js/modules/calculator.js',
+  'js/modules/examples.js',
+  'js/modules/formatting.js',
+  'js/modules/pwa.js',
+  'js/modules/sharing.js',
+  'js/modules/state.js',
+  'js/modules/theme.js',
+  'js/modules/ui.js',
+  'js/modules/dynamic-prices.js',
+  'manifest.json',
+  'icon-192x192.png',
+  'icon-512x512.png',
+  'bateaucroisiere.png',
+  'nostr-logo.png',
+  'favicon.ico'
 ];
 
 // Installation du service worker
@@ -61,40 +64,44 @@ self.addEventListener('activate', event => {
 
 // Interception des requêtes réseau
 self.addEventListener('fetch', event => {
-  // Vérifie si l'utilisateur est en ligne
-  if (navigator.onLine) {
-    // En ligne : essaie d'abord le réseau, puis le cache
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  const isNavigation = request.mode === 'navigate' || request.destination === 'document';
+
+  if (isNavigation) {
     event.respondWith(
-      fetch(event.request).then(response => {
-        // Si la requête a réussi, met à jour le cache
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      }).catch(() => {
-        // Si le réseau échoue, utilise le cache
-        return caches.match(event.request).then(cachedResponse => {
-          if (cachedResponse) {
-            return cachedResponse;
+      fetch(request)
+        .then(response => {
+          if (response && response.ok && request.url.startsWith(self.location.origin)) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseToCache);
+            });
           }
-          // En dernier recours, essaye de trouver dans le cache
-          return caches.match('/');
-        });
-      })
-    );
-  } else {
-    // Hors ligne : utilise le cache
-    event.respondWith(
-      caches.match(event.request).then(response => {
-        if (response) {
           return response;
-        }
-        // En dernier recours, essaye de trouver dans le cache
-        return caches.match('/');
-      })
+        })
+        .catch(() => caches.match('index.html'))
     );
+    return;
   }
+
+  // Stale-while-revalidate pour les assets
+  event.respondWith(
+    caches.match(request).then(cached => {
+      const fetchPromise = fetch(request)
+        .then(response => {
+          if (response && response.ok && request.url.startsWith(self.location.origin)) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => cached);
+
+      return cached || fetchPromise;
+    })
+  );
 });
