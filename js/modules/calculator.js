@@ -300,7 +300,14 @@ export function calculateComparison() {
     let formattedNumber;
     let rawNumberFormatted;
 
-    if (numberOfObjects >= 1e6) {
+    if (numberOfObjects >= 1e9) {
+        const valueInBillions = numberOfObjects / 1e9;
+        rawNumberFormatted = valueInBillions.toFixed(1).replace('.', ',');
+        if (rawNumberFormatted.endsWith(',0')) {
+            rawNumberFormatted = rawNumberFormatted.slice(0, -2);
+        }
+        formattedNumber = rawNumberFormatted + (valueInBillions < 2 ? ' milliard' : ' milliards');
+    } else if (numberOfObjects >= 1e6) {
         const valueInMillions = numberOfObjects / 1e6;
         rawNumberFormatted = valueInMillions.toFixed(1).replace('.', ',');
         if (rawNumberFormatted.endsWith(',0')) {
@@ -313,7 +320,7 @@ export function calculateComparison() {
         if (rawNumberFormatted.endsWith(',0')) {
             rawNumberFormatted = rawNumberFormatted.slice(0, -2);
         }
-        formattedNumber = rawNumberFormatted + (valueInThousands < 2 ? ' millier' : ' milliers');
+        formattedNumber = rawNumberFormatted + ' mille';
     } else if (numberOfObjects >= 1) {
         if (numberOfObjects % 1 !== 0) {
             formattedNumber = numberOfObjects.toFixed(1).replace('.', ',');
@@ -338,7 +345,7 @@ export function calculateComparison() {
      */
     const pluralizeObject = (name, count) => {
         if (!name) return "";
-        if (count < 2) return name; // En français, le pluriel commence à 2 (ex: 1.5 millier)
+        if (count < 2) return name; // En français, le pluriel commence à 2 (ex: 1.5 mille)
 
         const lower = name.toLowerCase();
 
