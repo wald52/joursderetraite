@@ -267,13 +267,13 @@ export function setRandomExample() {
 
                 if (scrollWidth > availableWidth) {
                     currentExampleElement.classList.add('scrolling');
-                    
+
                     // Calculer la distance de défilement nécessaire (réduire l'espace vide à la fin)
                     const scrollDistance = -(scrollWidth - availableWidth + 10); // Réduit à 10px d'espace vide
                     currentExampleElement.style.setProperty('--scroll-distance', `${scrollDistance}px`);
-                    
+
                     // Durée de l'animation : beaucoup plus rapide
-                    const baseDuration = Math.max(1, (scrollWidth - availableWidth) / 200); // Beaucoup plus rapide : minimum 1s, puis 1s pour 200px
+                    const baseDuration = Math.max(2, (scrollWidth - availableWidth) / 60); // Plus lent : minimum 2s, puis ~60px/s
                     marqueeContent.style.animationDuration = `${baseDuration}s`;
                 }
             });
