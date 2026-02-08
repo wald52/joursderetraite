@@ -16,29 +16,24 @@
     Compatible avec : toutes les autres
     ---------------------------------------- */
 @keyframes marqueeScroll {
-    0% {
+
+    0%,
+    30% {
         transform: translateX(0);
+        /* Pause de 30% au début */
     }
 
-    20% {
-        transform: translateX(0);
-        /* Pause de 20% au début */
-    }
-
-    80% {
-        transform: translateX(var(--scroll-distance, -100%));
-        /* Pause de 20% à la fin */
-    }
-
+    70%,
     100% {
         transform: translateX(var(--scroll-distance, -100%));
+        /* Pause de 30% à la fin */
     }
 }
 
 .marquee-content {
     display: inline-block;
     white-space: nowrap;
-    animation: marqueeScroll 4s ease-in-out infinite paused;
+    animation: marqueeScroll 4s ease-in-out infinite alternate paused;
     will-change: transform;
 }
 
