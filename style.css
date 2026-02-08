@@ -551,6 +551,8 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-lg);
+    background-image: none !important;
+    background-size: 1px 1px !important;
 }
 
 .btn-primary.one-shot-shimmer {
@@ -1298,57 +1300,11 @@ select.input-field option {
 .current-example.scrolling .marquee-content {
     display: inline-block;
     /* Pas de padding-left, le texte commence immédiatement */
-    animation: marquee 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    -webkit-animation: marquee 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes marquee {
-    0% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(0);
-    }
-
-    75% {
-        transform: translateX(var(--scroll-distance, -40%));
-    }
-
-    100% {
-        transform: translateX(var(--scroll-distance, -40%));
-    }
-}
-
-@-webkit-keyframes marquee {
-    0% {
-        -webkit-transform: translateX(0);
-    }
-
-    25% {
-        -webkit-transform: translateX(0);
-    }
-
-    75% {
-        -webkit-transform: translateX(var(--scroll-distance, -40%));
-    }
-
-    100% {
-        -webkit-transform: translateX(var(--scroll-distance, -40%));
-    }
+    animation-play-state: running;
 }
 
 .current-example:empty {
     display: none;
-}
-
-/* ============================================
-    20. SHARE SECTION
-    ============================================ */
-.share-section {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .share-buttons {
