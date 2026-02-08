@@ -19,12 +19,17 @@
     0% {
         transform: translateX(0);
     }
-    10% {
-        transform: translateX(0); /* Pause de 10% au début */
+
+    20% {
+        transform: translateX(0);
+        /* Pause de 20% au début */
     }
-    90% {
-        transform: translateX(var(--scroll-distance, -100%)); /* Pause de 10% à la fin */
+
+    80% {
+        transform: translateX(var(--scroll-distance, -100%));
+        /* Pause de 20% à la fin */
     }
+
     100% {
         transform: translateX(var(--scroll-distance, -100%));
     }
@@ -33,7 +38,7 @@
 .marquee-content {
     display: inline-block;
     white-space: nowrap;
-    animation: marqueeScroll 4s linear infinite paused;
+    animation: marqueeScroll 4s ease-in-out infinite paused;
     will-change: transform;
 }
 
