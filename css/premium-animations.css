@@ -11,10 +11,37 @@
 
 
 /* ----------------------------------------
-   4. SHIMMER BUTTON - Reflet lumineux sur les boutons
-   Classe à ajouter : .shimmer-btn
-   Compatible avec : toutes les autres
-   ---------------------------------------- */
+    5. MARQUEE SCROLL - Défilement horizontal automatique pour texte trop long
+    Classe à ajouter : .scrolling
+    Compatible avec : toutes les autres
+    ---------------------------------------- */
+@keyframes marqueeScroll {
+    0% {
+        transform: translateX(0);
+    }
+    10% {
+        transform: translateX(0); /* Pause de 10% au début */
+    }
+    90% {
+        transform: translateX(var(--scroll-distance, -100%)); /* Pause de 10% à la fin */
+    }
+    100% {
+        transform: translateX(var(--scroll-distance, -100%));
+    }
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marqueeScroll 4s linear infinite paused;
+    will-change: transform;
+}
+
+/* ----------------------------------------
+    4. SHIMMER BUTTON - Reflet lumineux sur les boutons
+    Classe à ajouter : .shimmer-btn
+    Compatible avec : toutes les autres
+    ---------------------------------------- */
 @keyframes shimmer {
     0% {
         transform: translateX(-120%);
