@@ -1,6 +1,6 @@
 // Service worker pour l'application PWA
 
-const CACHE_NAME = 'joursderetraite-v70'; // Mise à jour du numéro de version
+const CACHE_NAME = 'joursderetraite-v71'; // Mise à jour du numéro de version
 const urlsToCache = [
   './',
   'index.html',
