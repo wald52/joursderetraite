@@ -68,6 +68,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -215,61 +216,6 @@ body {
 }
 
 /* Title reveal animation moved to index.html for performance */
-
-@keyframes cardFadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes cardSheen {
-    0% {
-        opacity: 0;
-        transform: translateX(-120%);
-    }
-
-    30% {
-        opacity: 0.35;
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(120%);
-    }
-}
-
-.card-entrance {
-    opacity: 0;
-    position: relative;
-    overflow: hidden;
-    animation: cardFadeIn 0.5s ease-out forwards;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.card-entrance::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.08) 35%,
-            rgba(255, 255, 255, 0.28) 50%,
-            rgba(255, 255, 255, 0.08) 65%,
-            transparent 100%);
-    transform: translateX(-120%);
-    opacity: 0;
-    animation: cardSheen 1s ease-out forwards;
-    animation-delay: inherit;
-    pointer-events: none;
-    mix-blend-mode: screen;
-}
 
 
 .header-subtitle {
@@ -558,6 +504,7 @@ body {
 }
 
 .btn-primary:hover {
+    background: var(--gold-500) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
 }
@@ -597,7 +544,7 @@ body {
 }
 
 /* ============================================
-    9. INTERrupteur DE MODES
+    9. INTERRUPTEUR DE MODES - Sliding Pill Animation
     ============================================ */
 .mode-toggle {
     display: flex;
@@ -608,6 +555,44 @@ body {
     margin-top: -6px;
     position: relative;
     z-index: 10;
+}
+
+/* La pilule dorée glissante */
+.mode-toggle-pill {
+    position: absolute;
+    top: 0.12rem;
+    left: 0.12rem;
+    width: calc(50% - 0.12rem);
+    height: calc(100% - 0.24rem);
+    background: var(--gold-500);
+    border-radius: var(--radius-full);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    transition: transform 0.5s cubic-bezier(0.25, 1.05, 0.5, 1.02);
+    will-change: transform;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.mode-toggle-pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            transparent 40%,
+            transparent 60%,
+            rgba(255, 255, 255, 0.15) 100%);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+/* Position de la pilule selon le mode */
+.mode-toggle[data-active="temporal"] .mode-toggle-pill {
+    transform: translateX(0);
+}
+
+.mode-toggle[data-active="financial"] .mode-toggle-pill {
+    transform: translateX(100%);
 }
 
 .mode-toggle-btn {
@@ -622,6 +607,7 @@ body {
     cursor: pointer;
     transition: all var(--transition-base);
     z-index: 1;
+    position: relative;
 }
 
 .mode-toggle-btn svg {
@@ -634,7 +620,7 @@ body {
 
 .mode-toggle-btn.active {
     color: var(--navy-900);
-    background: var(--gold-500);
+    background: transparent;
 }
 
 .mode-toggle-btn:hover:not(.active) {
@@ -1051,7 +1037,6 @@ select.input-field option {
     background: rgba(212, 175, 55, 0.2);
     border: none;
     color: var(--gold-400);
-    padding: 0.375rem 0.625rem;
     font-size: 0.7rem;
     font-weight: 600;
     border-radius: var(--radius-sm);
@@ -1078,17 +1063,17 @@ select.input-field option {
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.375rem;
-    /* Réduit de 0.75rem pour compenser le changement de top */
     width: 100%;
     min-width: 0;
     position: relative;
     top: -9px;
-    /* Ajusté de -2px à -5px pour remonter le bouton sans décaler le reste */
     min-height: 40px;
+    justify-content: flex-start !important;
 }
 
 .example-btn-wrapper {
     flex-shrink: 0;
+    margin-left: 0 !important;
 }
 
 /* .example-btn and related moved to index.html for performance and Marching Ants 2.0 implementation */
@@ -1119,6 +1104,8 @@ select.input-field option {
     min-height: 36px;
     display: flex;
     align-items: center;
+    position: relative;
+    top: -2px;
 
     /* MODIFICATIONS POUR LE MARQUEE */
     overflow: hidden;
@@ -1162,6 +1149,8 @@ select.input-field option {
     border: 2px solid var(--gold-500);
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    position: relative;
+    top: -2px;
 
     /* MODIFICATIONS POUR LE MARQUEE */
     overflow: hidden;
@@ -1698,3 +1687,124 @@ select.input-field option {
 
 
 /* Classe pour cacher initialement le mode financier sans animation */
+
+
+/* ============================================
+    ANIMATIONS PREMIUM - MODULES FACILEMENT ACTIVABLES
+    ============================================
+    
+    POUR ACTIVER UNE ANIMATION : ajoutez la classe correspondante à l'élément HTML
+    POUR DESACTIVER : retirez la classe
+    
+    Toutes ces animations sont compatibles entre elles
+*/
+
+
+
+/* ----------------------------------------
+    5. MARQUEE SCROLL - Défilement horizontal automatique pour texte trop long
+    Classe à ajouter : .scrolling
+    Compatible avec : toutes les autres
+    ---------------------------------------- */
+@keyframes marqueeScroll {
+
+    0%,
+    30% {
+        transform: translateX(0);
+        /* Pause de 30% au début */
+    }
+
+    70%,
+    100% {
+        transform: translateX(var(--scroll-distance, -100%));
+        /* Pause de 30% à la fin */
+    }
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marqueeScroll 4s ease-in-out infinite alternate paused;
+    will-change: transform;
+}
+
+/* ----------------------------------------
+    4. SHIMMER BUTTON - Reflet lumineux sur les boutons
+    Classe à ajouter : .shimmer-btn
+    Compatible avec : toutes les autres
+    ---------------------------------------- */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(120%);
+    }
+}
+
+.shimmer-btn {
+    position: relative;
+    overflow: hidden;
+    background: var(--gold-500);
+}
+
+.shimmer-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 40%,
+            rgba(255, 255, 255, 0.7) 50%,
+            rgba(255, 255, 255, 0.2) 60%,
+            transparent 100%);
+    transform: translateX(-120%);
+    animation: shimmer 3s ease-in-out infinite;
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* ----------------------------------------
+   3b. TITLE SHIMMER - Reflet lumineux sur les lettres du titre
+   Classe à ajouter : .title-shimmer
+   Compatible avec : title-glow
+   ---------------------------------------- */
+@keyframes titleShimmerPulse {
+    0% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
+
+.title-shimmer {
+    position: relative;
+}
+
+.title-shimmer::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.35) 40%,
+            rgba(255, 255, 255, 0.85) 50%,
+            rgba(255, 255, 255, 0.35) 60%,
+            transparent 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    opacity: 0.25;
+    animation: titleShimmerPulse 2.8s ease-in-out infinite;
+    will-change: opacity;
+    pointer-events: none;
+}

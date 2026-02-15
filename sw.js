@@ -15,7 +15,7 @@ const urlsToCache = [
   'js/modules/state.js',
   'js/modules/theme.js',
   'js/modules/ui.js',
-  'js/modules/dynamic-prices.js',
+
   'manifest.json',
   'icon-192x192.png',
   'icon-512x512.png',
