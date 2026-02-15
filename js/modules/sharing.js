@@ -139,7 +139,11 @@ function getShareMessage(mode) {
             }).format(amountValue);
         }
 
-        message = `Une perspective surprenante : ${description} représentent ${resultText} de retraites versées en France. 🧐`;
+        // Détection du pluriel pour l'accord du verbe
+        const isPlural = description.toLowerCase().startsWith('les ') || description.toLowerCase().startsWith('des ');
+        const verb = isPlural ? "représentent" : "représente";
+
+        message = `Une perspective surprenante : ${description} ${verb} ${resultText} de retraites versées en France. 🧐`;
     } else {
         // En mode financier, storedFinancialResult contient déjà une phrase de comparaison
         // On la nettoie un peu si besoin pour le partage
@@ -168,12 +172,19 @@ export function shareOnSocial(platform) {
     const directPlatforms = {
         'facebook': `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(message)}`,
         'twitter': `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(currentUrl)}`,
-        'linkedin': `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`,
-        'nostr': `https://nostr.at/compose?text=${encodeURIComponent(fullMessage)}`
+        'linkedin': `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`
     };
 
     if (directPlatforms[platform]) {
-        window.open(directPlatforms[platform], '_blank');
+        // Traitement spécial pour LinkedIn : partage URL + copie du message séparément
+        if (platform === 'linkedin') {
+            window.open(directPlatforms[platform], '_blank');
+            navigator.clipboard.writeText(message).catch(err => {
+                console.warn('Erreur copie message LinkedIn:', err);
+            });
+        } else {
+            window.open(directPlatforms[platform], '_blank');
+        }
         return;
     }
 
@@ -246,6 +257,20 @@ export function checkSMSCapability() {
 }
 
 /**
+ * Détecte la plateforme exacte de l'utilisateur
+ * @returns {Object} { isWindows, isMac, isLinux, isMobile }
+ */
+function detectPlatform() {
+    const userAgent = navigator.userAgent;
+    const isWindows = /Windows NT/.test(userAgent);
+    const isMac = /Mac OS X/.test(userAgent) && !/iPhone|iPad/.test(userAgent);
+    const isLinux = /Linux/.test(userAgent) && !/Android/.test(userAgent);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    
+    return { isWindows, isMac, isLinux, isMobile };
+}
+
+/**
  * Partage natif de l'appareil
  * @param {string} mode - 'temporal' ou 'financial'
  */
@@ -259,21 +284,199 @@ export function nativeShare(mode = 'temporal') {
 
     const shareTitle = "Incroyable perspective sur les retraites en France!";
     const shareText = message;
+    const fullText = `${shareText}\n\n${window.location.href}`;
+    
+    const platform = detectPlatform();
 
+    // Sur Windows et Linux : utiliser la popup de copie (le partage natif ne transmet pas le texte)
+    if (platform.isWindows || platform.isLinux) {
+        showShareHelperPopup(fullText);
+        return;
+    }
+
+    // Sur Mac et mobile : utiliser le partage natif (fonctionne avec texte)
     if (navigator.share) {
         navigator.share({
             title: shareTitle,
             text: shareText,
             url: window.location.href
         }).catch(error => {
-
             if (error.name !== 'AbortError') {
-                fallbackShare(shareText);
+                fallbackShare(fullText);
             }
         });
     } else {
-        fallbackShare(shareText);
+        fallbackShare(fullText);
     }
+}
+
+/**
+ * Affiche une popup d'aide pour le partage sur desktop
+ * @param {string} text - Le texte complet à copier
+ */
+function showShareHelperPopup(text) {
+    // Supprimer la popup existante si elle existe
+    const existingPopup = document.getElementById('share-helper-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+
+    // Créer la popup avec le thème du site (bleu marine et doré)
+    const popup = document.createElement('div');
+    popup.id = 'share-helper-popup';
+    popup.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(145deg, #112240 0%, #0a192f 100%);
+        padding: 24px;
+        border-radius: 12px;
+        border: 2px solid #d4af37;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(212, 175, 55, 0.2);
+        z-index: 10000;
+        max-width: 90%;
+        width: 500px;
+        font-family: inherit;
+        color: #ffffff;
+    `;
+
+    popup.innerHTML = `
+        <h3 style="margin: 0 0 16px 0; font-size: 20px; color: #e6c55a; text-shadow: 0 0 10px rgba(230, 197, 90, 0.3);">📋 Partage</h3>
+        <p style="margin: 0 0 12px 0; color: rgba(255, 255, 255, 0.8); font-size: 14px;">
+            Voici votre message à partager :
+        </p>
+        <textarea id="share-helper-text" readonly style="
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            overflow: hidden;
+            margin-bottom: 16px;
+            font-family: inherit;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        ">${text}</textarea>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button id="share-helper-close" style="
+                padding: 10px 20px;
+                border: 1px solid rgba(212, 175, 55, 0.4);
+                background: rgba(255, 255, 255, 0.05);
+                color: rgba(255, 255, 255, 0.9);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: all 0.2s;
+            ">Fermer</button>
+            <button id="share-helper-copy" style="
+                padding: 10px 20px;
+                border: 1px solid #d4af37;
+                background: linear-gradient(145deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+                color: #e6c55a;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.2s;
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            ">📋 Copier</button>
+        </div>
+    `;
+
+    // Créer l'overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'share-helper-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 25, 47, 0.8);
+        z-index: 9999;
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(popup);
+
+    // Focus sur le textarea (sans sélectionner le texte pour plus d'esthétique)
+    const textarea = document.getElementById('share-helper-text');
+    
+    // Ajuster la hauteur automatiquement au contenu
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+    
+    textarea.focus();
+
+    // Gestionnaires d'événements
+    const closePopup = () => {
+        popup.remove();
+        overlay.remove();
+    };
+
+    const closeBtn = document.getElementById('share-helper-close');
+    const copyBtn = document.getElementById('share-helper-copy');
+    
+    // Effets de survol pour le bouton Fermer
+    closeBtn.addEventListener('mouseenter', () => {
+        closeBtn.style.borderColor = '#d4af37';
+        closeBtn.style.color = '#e6c55a';
+        closeBtn.style.background = 'rgba(212, 175, 55, 0.1)';
+        closeBtn.style.transform = 'translateY(-2px)';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+        closeBtn.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+        closeBtn.style.color = 'rgba(255, 255, 255, 0.9)';
+        closeBtn.style.background = 'rgba(255, 255, 255, 0.05)';
+        closeBtn.style.transform = 'translateY(0)';
+    });
+    
+    // Effets de survol pour le bouton Copier
+    copyBtn.addEventListener('mouseenter', () => {
+        copyBtn.style.borderColor = '#d4af37';
+        copyBtn.style.color = '#f0d78c';
+        copyBtn.style.background = 'linear-gradient(145deg, rgba(212, 175, 55, 0.35) 0%, rgba(212, 175, 55, 0.25) 100%)';
+        copyBtn.style.transform = 'translateY(-2px)';
+        copyBtn.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.4)';
+    });
+    copyBtn.addEventListener('mouseleave', () => {
+        copyBtn.style.borderColor = '#d4af37';
+        copyBtn.style.color = '#e6c55a';
+        copyBtn.style.background = 'linear-gradient(145deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)';
+        copyBtn.style.transform = 'translateY(0)';
+        copyBtn.style.boxShadow = '0 4px 15px rgba(212, 175, 55, 0.3)';
+    });
+    
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', closePopup);
+
+    copyBtn.addEventListener('click', () => {
+        textarea.select();
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✓ Copié !';
+            // Garder la couleur dorée du bouton, ne pas changer en vert
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 5000);
+        }).catch(err => {
+            console.error('Erreur copie:', err);
+            alert('Erreur lors de la copie. Veuillez sélectionner et copier manuellement.');
+        });
+    });
+
+    // Fermer avec Escape
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+            closePopup();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
 }
 
 /**
@@ -281,18 +484,5 @@ export function nativeShare(mode = 'temporal') {
  * @param {string} text - Le texte à partager
  */
 function fallbackShare(text) {
-    if (confirm("L'API de partage n'est pas prise en charge sur votre appareil. Voulez-vous copier le texte dans le presse-papiers ?")) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Le texte a été copié dans le presse-papiers.');
-        }).catch(err => {
-            console.error('Erreur lors de la copie:', err);
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            alert('Le texte a été copié dans le presse-papiers.');
-        });
-    }
+    showShareHelperPopup(text);
 }

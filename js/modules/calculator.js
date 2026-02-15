@@ -404,6 +404,20 @@ export function calculateComparison() {
     }
     const safeObjectLabel = escapeHTML(objectLabel);
 
+    // Version avec minuscule pour le partage (en milieu de phrase)
+    let objectLabelLower = objectLabel;
+    if (objectLabel.length > 0) {
+        const firstWord = objectLabel.split(' ')[0];
+        // Ne pas mettre en minuscule si c'est un acronyme ou un nom propre connu
+        const isAcronym = firstWord === firstWord.toUpperCase() && firstWord.length > 1;
+        const isProperNoun = ['UNESCO', 'Kylian', 'Bernard', 'Emmanuel', 'Macron'].some(
+            name => firstWord.includes(name) || objectLabel.toLowerCase().includes(name.toLowerCase())
+        );
+        if (!isAcronym && !isProperNoun) {
+            objectLabelLower = objectLabel.charAt(0).toLowerCase() + objectLabel.slice(1);
+        }
+    }
+
     // Affichage du résultat principal avec la nouvelle structure de liste
     const mainResultText = document.getElementById('result-text-financial');
     const periodText = getPeriodText(periodMultiplier);
@@ -423,7 +437,8 @@ export function calculateComparison() {
     triggerAnimation(mainResultText);
 
     // Texte simple pour le partage
-    const simpleText = `Avec ${periodText} de retraites (${formatCurrency(periodAmount)}), on peut avoir ${formattedNumber} ${objectLabel} à ${formatCurrency(objectPrice)} chacun.`;
+    const priceText = numberOfObjects > 1 ? `à ${formatCurrency(objectPrice)} chacun` : `à ${formatCurrency(objectPrice)}`;
+    const simpleText = `Avec ${periodText} de retraites (${formatCurrency(periodAmount)}), on peut avoir ${formattedNumber} ${objectLabelLower} ${priceText}.`;
 
     // Stocker les résultats
     state.storedFinancialResult = simpleText;

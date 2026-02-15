@@ -286,7 +286,7 @@ export function setRandomExample() {
 }
 
 /**
- * Réinitialise le formulaire
+ * Réinitialise le formulaire du mode temporel uniquement
  */
 export function resetForm() {
     const amountInput = document.getElementById('amount');
@@ -300,27 +300,19 @@ export function resetForm() {
     }
     state.currentExampleLabel = '';
 
-    // Masquer les sections de résultat
+    // Masquer les sections de résultat temporel uniquement
     const resultTemporal = document.getElementById('result-section-temporal');
     const shareTemporal = document.getElementById('share-section-temporal');
-    const resultFinancial = document.getElementById('result-section-financial');
-    const shareFinancial = document.getElementById('share-section-financial');
 
     if (resultTemporal) resultTemporal.classList.add('hidden');
     if (shareTemporal) shareTemporal.classList.add('hidden');
-    if (resultFinancial) resultFinancial.classList.add('hidden');
-    if (shareFinancial) shareFinancial.classList.add('hidden');
 
-    // Réinitialiser les textes
+    // Réinitialiser le texte temporel
     const resultTextTemporal = document.getElementById('result-text-temporal');
-    const resultTextFinancial = document.getElementById('result-text-financial');
-
     if (resultTextTemporal) resultTextTemporal.textContent = '';
-    if (resultTextFinancial) resultTextFinancial.textContent = '';
 
-    // Réinitialiser l'état
+    // Réinitialiser uniquement l'état temporel
     state.storedTemporalResult = '';
-    state.storedFinancialResult = '';
 }
 
 /**
@@ -335,6 +327,12 @@ export function switchMode(mode) {
 
     // Mise à jour de l'état global
     state.currentActiveMode = mode;
+
+    // Mise à jour du data-attribute pour la pilule glissante
+    const modeToggle = document.querySelector('.mode-toggle');
+    if (modeToggle) {
+        modeToggle.setAttribute('data-active', mode);
+    }
 
     // 1. Mise à jour du conteneur pour déclencher les animations CSS
     const modesContainer = document.querySelector('.modes-container');
