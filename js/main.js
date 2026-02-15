@@ -8,7 +8,7 @@ import { formatNumberInput, allowOnlyNumbersAndComma, formatNumberOnBlur } from 
 import { toggleMethodology, setRandomExample, resetForm, switchMode, updateObjectPrice, handleInput, initCustomDropdowns } from './modules/ui.js';
 import { initTheme } from './modules/theme.js';
 import { initPWA, promptInstall, dismissSnackbar } from './modules/pwa.js';
-import { initDynamicPrices } from './modules/dynamic-prices.js';
+
 
 // Exposer les fonctions globalement pour les attributs onclick dans le HTML
 window.formatNumberInput = formatNumberInput;
@@ -60,8 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialiser la PWA
     initPWA();
 
-    // Mettre à jour les exemples dynamiques (prix BTC / or, etc.)
-    initDynamicPrices();
+
 
     // Effet premium de première visite
     try {
@@ -115,6 +114,22 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         setTimeout(initDeferred, 400);
     }
+
+    // Gestion de la touche Entrée pour le mode temporel
+    document.getElementById('amount')?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            formatNumberOnBlur(this);
+            calculate();
+        }
+    });
+
+    // Gestion de la touche Entrée pour le mode financier
+    document.getElementById('object-price')?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            formatNumberOnBlur(this);
+            calculateComparison();
+        }
+    });
 
     // Bateau : priorité max (preload + affichage dès que possible)
     requestAnimationFrame(function showPriorityImages() {
